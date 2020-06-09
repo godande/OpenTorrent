@@ -38,7 +38,7 @@ public:
 
     explicit TorrentMultipleFileInfo(BencodeElement const &el);
 
-    const List &files() const;
+    [[nodiscard]] const List &files() const;
 
 private:
     List files_;

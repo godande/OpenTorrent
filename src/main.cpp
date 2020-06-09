@@ -1,6 +1,7 @@
 #include "logger.h"
 #include <iostream>
 #include <ios>
+#include <boost/asio.hpp>
 #include "torrentmultiplefileInfo.h"
 #include "torrentsinglefileinfo.h"
 #include "logger.h"
