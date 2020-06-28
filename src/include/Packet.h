@@ -6,14 +6,20 @@
 #define COCKTORRENT_PACKET_H
 
 
+#include <boost/asio.hpp>
+
 class Packet {
-
 public:
-    int64_t protocolID;
-    int32_t actiod;
-    int32_t transaction;
-private:
 
+    Packet();
+    void EncodeToBinary();
+    void DecodeFromBinary();
+
+private:
+    static constexpr int64_t connectionID_ = 0x41727101980;
+    static constexpr int32_t actionID_ = 0;
+    int32_t transaction_;
+    boost::asio::streambuf buffer_;
 };
 
 

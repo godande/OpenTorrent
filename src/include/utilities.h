@@ -31,13 +31,22 @@ namespace util {
     }
 
     template<class T>
-    const CharSequence<sizeof(T)> ToNetworkCharSequence(T x) {
+    CharSequence<sizeof(T)> ToNetworkCharSequence(T x) {
         union {
             CharSequence<sizeof(T)> chars;
             T value;
         } converter;
         converter.value = HostToNetwork(x);
         return converter.chars;
+    }
+    template<class T>
+    T FromNetworkCharSequence(CharSequence<sizeof(T)> bytes) {
+        union {
+            CharSequence<sizeof(T)> chars;
+            T value;
+        } converter;
+        converter.chars = bytes;
+        return NetworkToHost(converter.value);
     }
 }
 
