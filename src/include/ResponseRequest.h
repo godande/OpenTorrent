@@ -2,11 +2,11 @@
 // Created by prise on 6/28/20.
 //
 
-#ifndef COCKTORRENT_RESPONCEPACKET_H
-#define COCKTORRENT_RESPONCEPACKET_H
+#ifndef COCKTORRENT_RESPONSEREQUEST_H
+#define COCKTORRENT_RESPONSEREQUEST_H
 #include <cinttypes>
 
-class ResponcePacket {
+class ResponseRequest {
 public:
      int32_t action;
      int32_t transactionID;
@@ -16,4 +16,4 @@ private:
 };
 
 
-#endif //COCKTORRENT_RESPONCEPACKET_H
+#endif //COCKTORRENT_RESPONSEREQUEST_H

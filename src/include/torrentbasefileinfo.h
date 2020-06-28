@@ -25,11 +25,11 @@ public:
 
     explicit TorrentBaseFileInfo(BencodeElement const &el);
 
-    const String &announce() const;
+    [[nodiscard]] const String &announce() const;
 
-    const String &pieces() const;
+    [[nodiscard]] const String &pieces() const;
 
-    const String &name() const;
+    [[nodiscard]] const String &name() const;
 
     Integer piece_length() const;
 

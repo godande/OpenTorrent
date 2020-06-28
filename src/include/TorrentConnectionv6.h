@@ -29,6 +29,7 @@ public:
         });
     }
 
+    static std::mt19937 generator;
 private:
     void HandShake();
 
@@ -40,7 +41,6 @@ private:
 
     void ReceiveAnnounceResponse();
 
-    static std::mt19937 generator;
     IOService &service_;
     EndPoint end_point_;
     Socket socket_;
