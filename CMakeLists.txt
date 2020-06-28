@@ -13,5 +13,5 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS system thread regex)
 SET(BOOST_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
 file(GLOB SOURCES "src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES} src/include/TorrentConnectionv6.cpp src/include/TorrentConnectionv6.h)
+add_executable(${PROJECT_NAME} ${SOURCES} src/include/TorrentConnectionv6.cpp src/include/TorrentConnectionv6.h src/include/Packet.cpp src/include/Packet.h src/include/RPacket.cpp src/include/RPacket.h src/include/APacket.cpp src/include/APacket.h)
 target_link_libraries(${PROJECT_NAME} ${BOOST_LIBS})

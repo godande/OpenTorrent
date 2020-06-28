@@ -39,3 +39,10 @@ uint32_t TorrentConnectionv6::SendConnectRequest() {
 void TorrentConnectionv6::ReceiveConnectResponse(uint32_t transaction_id) {
 
 }
+
+void TorrentConnectionv6::SendAnnounceRequest() {
+    using namespace std::string_literals;
+    Buffer buffer;
+    std::ostream os(&buffer);
+
+}
