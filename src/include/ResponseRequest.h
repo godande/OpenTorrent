@@ -7,13 +7,12 @@
 #include <cinttypes>
 
 class ResponseRequest {
-public:
-     int32_t action;
-     int32_t transactionID;
-     int64_t connectionID;
-private:
+ public:
+  int32_t action;
+  int32_t transactionID;
+  int64_t connectionID;
 
+ private:
 };
 
-
-#endif //COCKTORRENT_RESPONSEREQUEST_H
+#endif  // COCKTORRENT_RESPONSEREQUEST_H

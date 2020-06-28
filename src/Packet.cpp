@@ -1,15 +1,9 @@
 //
 // Created by prise on 6/28/20.
 //
-#include "bencode.h"
 #include "Packet.h"
+#include "bencode.h"
 
-void Packet::EncodeToBinary() {
+void Packet::EncodeToBinary() {}
 
-}
-
-void Packet::DecodeFromBinary() {
-
-}
-
-
+void Packet::DecodeFromBinary() {}

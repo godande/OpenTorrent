@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="CockTorrent"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CockTorrent">
+				<Option output="/home/prise/CLionProjects/CockTorrent/CockTorrent" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/prise/CLionProjects/CockTorrent/src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 CockTorrent"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CockTorrent/fast">
+				<Option output="/home/prise/CLionProjects/CockTorrent/CockTorrent" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/prise/CLionProjects/CockTorrent/src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 CockTorrent/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pthread">
+				<Option output="/home/prise/CLionProjects/CockTorrent/CMakeFiles/pthread.dir/pthread.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/prise/CLionProjects/CockTorrent/src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 pthread"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pthread/fast">
+				<Option output="/home/prise/CLionProjects/CockTorrent/CMakeFiles/pthread.dir/pthread.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/prise/CLionProjects/CockTorrent"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/prise/CLionProjects/CockTorrent/src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 pthread/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/prise/CLionProjects/CockTorrent/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/AnnouncePacket.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/Packet.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseAnnouncePacket.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseRequest.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/bencode.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/AnnouncePacket.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/Packet.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseAnnouncePacket.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseRequest.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/logger.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/main.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentbasefileinfo.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentmultiplefileinfo.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentsinglefileinfo.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/usr/lib/libpthread.so">
+			<Option target="pthread"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
