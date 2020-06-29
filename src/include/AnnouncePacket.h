@@ -6,7 +6,7 @@
 #define COCKTORRENT_ANNOUNCEPACKET_H
 #include <boost/asio.hpp>
 #include <cinttypes>
-#include "ResponseRequest.h"
+#include "ResponseConnectPacket.h"
 
 class AnnouncePacket {
  public:

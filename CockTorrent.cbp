@@ -105,13 +105,13 @@
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/AnnouncePacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/Packet.cpp">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ConnectPacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseAnnouncePacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseRequest.cpp">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseConnectPacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/bencode.cpp">
@@ -120,13 +120,13 @@
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/AnnouncePacket.h">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/Packet.h">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ConnectPacket.h">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseAnnouncePacket.h">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseRequest.h">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseConnectPacket.h">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.cpp">
