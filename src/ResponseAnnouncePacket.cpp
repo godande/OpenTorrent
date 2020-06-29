@@ -6,7 +6,7 @@
 #include "logger.h"
 #include "utilities.h"
 
-ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf buffer,
+ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf& buffer,
                                                int32_t transactionID) {
   if (buffer.size() < 20) {
     Logger::get_instance()->Error("Bad packet");
@@ -37,11 +37,8 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf buffer,
 
   while (buffer.size() > 0) {
     buffer.sgetn(tempBuf.chars, 4);
-    Seed toInsert{};
-    toInsert.ip = util::FromNetworkCharSequence<int32_t>(tempBuf);
-
     buffer.sgetn(portBuf.chars, 2);
-    toInsert.port = util::FromNetworkCharSequence<int16_t>(portBuf);
+    peers_.emplace_back(Seed{util::FromNetworkCharSequence<int32_t>(tempBuf),util::FromNetworkCharSequence<uint16_t>(portBuf)});
   }
 }
 

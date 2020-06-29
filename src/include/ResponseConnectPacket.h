@@ -8,7 +8,7 @@
 #include <cinttypes>
 class ResponseConnectPacket {
  public:
-  [[nodiscard]] ResponseConnectPacket(boost::asio::streambuf buf,
+  ResponseConnectPacket(boost::asio::streambuf& buf,
                                       int32_t transactionID);
   [[nodiscard]] int32_t action() const;
   [[nodiscard]] int32_t transactionID() const;

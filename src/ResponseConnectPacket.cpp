@@ -10,7 +10,7 @@
 int32_t ResponseConnectPacket::action() const { return action_; }
 int32_t ResponseConnectPacket::transactionID() const { return transactionID_; }
 int64_t ResponseConnectPacket::connectionID() const { return connectionID_; }
-ResponseConnectPacket::ResponseConnectPacket(boost::asio::streambuf buf,
+ResponseConnectPacket::ResponseConnectPacket(boost::asio::streambuf& buf,
                                              int32_t transactionID) {
   util::CharSequence<4> tempBuf{};
   util::CharSequence<8> portBuf{};

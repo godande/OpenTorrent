@@ -114,6 +114,9 @@
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseConnectPacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/TorrentConnection4.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/bencode.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
@@ -127,6 +130,9 @@
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseConnectPacket.h">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnection4.h">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.cpp">

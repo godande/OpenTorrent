@@ -14,6 +14,6 @@ SET(BOOST_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIB
 
 file(GLOB SOURCES "src/*.cpp")
 add_library(pthread OBJECT /usr/lib/libpthread.so)
-add_executable(${PROJECT_NAME} ${SOURCES} src/include/TorrentConnectionv6.cpp src/include/TorrentConnectionv6.h src/ConnectPacket.cpp src/include/ConnectPacket.h src/ResponseConnectPacket.cpp src/include/ResponseConnectPacket.h src/AnnouncePacket.cpp src/include/AnnouncePacket.h src/ResponseAnnouncePacket.cpp src/include/ResponseAnnouncePacket.h)
+add_executable(${PROJECT_NAME} ${SOURCES} src/include/TorrentConnectionv6.cpp src/include/TorrentConnectionv6.h src/ConnectPacket.cpp src/include/ConnectPacket.h src/ResponseConnectPacket.cpp src/include/ResponseConnectPacket.h src/AnnouncePacket.cpp src/include/AnnouncePacket.h src/ResponseAnnouncePacket.cpp src/include/ResponseAnnouncePacket.h src/TorrentConnection4.cpp src/include/TorrentConnection4.h)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 

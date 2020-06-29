@@ -14,3 +14,7 @@ ConnectPacket::ConnectPacket() {
   buffer_.sputn(util::ToNetworkCharSequence(transactionID_).chars,
                 sizeof(int32_t));
 }
+int64_t ConnectPacket::connectionID() { return connectionID_; }
+int32_t ConnectPacket::actionID() { return actionID_; }
+int32_t ConnectPacket::transactionID() const { return transactionID_; }
+const boost::asio::streambuf& ConnectPacket::buffer() const { return buffer_; }

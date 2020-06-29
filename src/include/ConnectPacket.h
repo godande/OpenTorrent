@@ -21,9 +21,5 @@ class ConnectPacket {
   int32_t transactionID_;
   boost::asio::streambuf buffer_;
 };
-int64_t ConnectPacket::connectionID() { return connectionID_; }
-int32_t ConnectPacket::actionID() { return actionID_; }
-int32_t ConnectPacket::transactionID() const { return transactionID_; }
-const boost::asio::streambuf& ConnectPacket::buffer() const { return buffer_; }
 
 #endif  // COCKTORRENT_CONNECTPACKET_H

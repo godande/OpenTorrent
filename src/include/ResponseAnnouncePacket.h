@@ -11,7 +11,7 @@
 class ResponseAnnouncePacket {
  public:
   ResponseAnnouncePacket() = delete;
-  explicit ResponseAnnouncePacket(boost::asio::streambuf buffer,
+  explicit ResponseAnnouncePacket(boost::asio::streambuf& buffer,
                                   int32_t transactionID);
   struct Seed {
     int32_t ip;
