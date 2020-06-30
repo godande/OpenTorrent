@@ -14,7 +14,7 @@ class ResponseAnnouncePacket {
   explicit ResponseAnnouncePacket(boost::asio::streambuf& buffer,
                                   int32_t transactionID);
   struct Seed {
-    int32_t ip;
+    uint32_t ip;
     uint16_t port;
   };
 

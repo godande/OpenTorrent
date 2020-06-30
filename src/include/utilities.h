@@ -50,14 +50,15 @@ T FromNetworkCharSequence(CharSequence<sizeof(T)> bytes) {
   return NetworkToHost(converter.value);
 }
 
-template <size_t LL1_N_LL1_K_A>
-std::array<char, LL1_N_LL1_K_A> StringToCharArray(std::string symbols) {
-  if (symbols.size() != LL1_N_LL1_K_A) {
+template <size_t size>
+std::array<char, size> StringToCharArray(std::string_view symbols) {
+  if (symbols.size() != size) {
     Logger::get_instance()->Error("Size mismatch");
     throw std::runtime_error{"Size mismatch"};
   }
-  std::array<char, LL1_N_LL1_K_A> noob{};
-  std::copy(symbols.begin(),symbols.end(),noob.begin());
+  std::array<char, size> to_return{};
+  std::copy(symbols.begin(),symbols.end(),to_return.begin());
+  return to_return;
 }
 
 }  // namespace util

@@ -1,4 +1,5 @@
 #include <TorrentConnectionv6.h>
+#include <openssl/sha.h>
 #include <boost/asio.hpp>
 #include <ios>
 #include <iostream>
@@ -14,19 +15,18 @@
 #include "utilities.h"
 
 int main() {
-  Logger::get_instance()->Debug("KEK");
   std::ifstream input_file(
       "/home/prise/CLionProjects/CockTorrent/test-torrent-files/"
-      "nsfw.torrent",
+      "nsfw2.torrent",
       std::ios::binary | std::ifstream::in);
   std::cout << input_file.is_open() << '\n';
   std::string expression{std::istreambuf_iterator<char>{input_file},
                          std::istreambuf_iterator<char>{}};
   auto res = bencode::Decode(expression);
+  auto adapter = adapt(&res);
+  std::string var = bencode::Encode(*adapter["info"].element());
   //  std::cout << bencode::Encode(res) << '\n';
   TorrentMultipleFileInfo s_file_s_info{res};
-  std::cout << s_file_s_info.announce() << '\n';
-
   input_file.close();
   /*input_file.open(
       "/home/prise/CLionProjects/CockTorrent/test-torrent-files/"
@@ -47,6 +47,7 @@ int main() {
       boost::asio::ip::resolver_query_base::numeric_service);
   for (boost::asio::ip::udp::resolver::iterator i = resolver.resolve(query);
        i != boost::asio::ip::udp::resolver::iterator(); ++i) {
+    i = resolver.resolve(query);
     boost::asio::ip::udp::endpoint end = *i;
     std::cout << end.address() << ' ';
     socket_.connect(end);
@@ -58,17 +59,22 @@ int main() {
     ResponseConnectPacket income(buf, sendPacket.transactionID());
     std::cout << income.transactionID() << " " << income.connectionID() << " "
               << income.action() << '\n';
+
     std::array<char, 20> generated{};
     std::uniform_int_distribution<char> distribution;
     std::generate(generated.begin(), generated.end(), [&distribution]() {
       return distribution(TorrentConnectionv6::generator);
     });
+    std::array<char, 20> toSend{};
+    SHA1(reinterpret_cast<const unsigned char*>(var.c_str()), var.size(),
+         reinterpret_cast<unsigned char*>(toSend.data()));
+    //  std::cout << var << '\n';
+    std::cout << toSend.data() << '\n';
     std::uniform_int_distribution<uint32_t> distribution2;
     AnnouncePacket sendAnnounce(
-        income.connectionID(),
-        util::StringToCharArray<20>(s_file_s_info.pieces().substr(0, 20)),
-        generated, 0, 0, 0, 2, 0, distribution2(TorrentConnectionv6::generator),
-        -1, 1337, 0);
+        income.connectionID(), toSend, generated, 0, 0, 0, 2, 0,
+        distribution2(TorrentConnectionv6::generator), -1, 1337, 0);
+
     socket_.send(sendAnnounce.buffer().data());
     boost::asio::streambuf buffer{};
     socket_.receive(buffer.prepare(140));
@@ -78,7 +84,7 @@ int main() {
               << ' ' << receivePacket.leechers() << ' '
               << receivePacket.seeders() << ' ' << receivePacket.interval()
               << '\n';
-    for(const auto& x : receivePacket.peers()) {
+    for (const auto& x : receivePacket.peers()) {
       std::cout << x.ip << ' ' << x.port << '\n';
     }
   }

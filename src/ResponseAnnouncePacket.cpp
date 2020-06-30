@@ -3,6 +3,7 @@
 //
 
 #include "ResponseAnnouncePacket.h"
+#include <iostream>
 #include "logger.h"
 #include "utilities.h"
 
@@ -38,7 +39,13 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf& buffer,
   while (buffer.size() > 0) {
     buffer.sgetn(tempBuf.chars, 4);
     buffer.sgetn(portBuf.chars, 2);
-    peers_.emplace_back(Seed{util::FromNetworkCharSequence<int32_t>(tempBuf),util::FromNetworkCharSequence<uint16_t>(portBuf)});
+    auto to_return = Seed{util::FromNetworkCharSequence<uint32_t>(tempBuf),
+                          util::FromNetworkCharSequence<uint16_t>(portBuf)};
+    if (to_return.port || to_return.ip) {
+      peers_.push_back(to_return);
+      std::cout << util::ToNetworkCharSequence<int32_t>(to_return.ip).chars
+                << '\n';
+    }
   }
 }
 
@@ -52,7 +59,7 @@ int32_t ResponseAnnouncePacket::leechers() const { return leechers_; }
 
 int32_t ResponseAnnouncePacket::seeders() const { return seeders_; }
 
-const std::vector<ResponseAnnouncePacket::Seed> &ResponseAnnouncePacket::peers()
+const std::vector<ResponseAnnouncePacket::Seed>& ResponseAnnouncePacket::peers()
     const {
   return peers_;
 }
