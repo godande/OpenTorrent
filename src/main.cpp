@@ -1,18 +1,17 @@
-#include <TorrentConnectionv6.h>
 #include <openssl/sha.h>
 #include <boost/asio.hpp>
 #include <ios>
 #include <iostream>
-#include "AnnouncePacket.h"
-#include "ConnectPacket.h"
-#include "ResponseAnnouncePacket.h"
-#include "TorrentConnectionv6.h"
-#include "bencode.h"
-#include "bencodeelementadapter.h"
-#include "logger.h"
-#include "torrentmultiplefileInfo.h"
-#include "torrentsinglefileinfo.h"
-#include "utilities.h"
+#include "include/announcepacket.h"
+#include "include/bencode.h"
+#include "include/bencodeelementadapter.h"
+#include "include/connectpacket.h"
+#include "include/logger.h"
+#include "include/responseannouncepacket.h"
+#include "include/torrentconnectionv6.h"
+#include "include/torrentmultiplefileInfo.h"
+#include "include/torrentsinglefileinfo.h"
+#include "include/utilities.h"
 
 int main() {
   std::ifstream input_file(
@@ -36,7 +35,7 @@ int main() {
                            std::istreambuf_iterator<char>{}};
   res = bencode::Decode(expression);
 
-  TorrentMultipleFileInfo s_file_m_info{res};
+
   std::cout << s_file_m_info.announce();
    */
   boost::asio::io_service io_service;
@@ -45,7 +44,7 @@ int main() {
   boost::asio::ip::udp::resolver::query query(
       "9.rarbg.me", "2930",
       boost::asio::ip::resolver_query_base::numeric_service);
-  for (boost::asio::ip::udp::resolver::iterator i = resolver.resolve(query);
+  for (auto i = resolver.resolve(query);
        i != boost::asio::ip::udp::resolver::iterator(); ++i) {
     i = resolver.resolve(query);
     boost::asio::ip::udp::endpoint end = *i;

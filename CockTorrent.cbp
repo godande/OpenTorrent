@@ -70,43 +70,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/AnnouncePacket.cpp">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ConnectPacket.cpp">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseAnnouncePacket.cpp">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/ResponseConnectPacket.cpp">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/TorrentConnection4.cpp">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/announcepacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/bencode.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/AnnouncePacket.h">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/connectpacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ConnectPacket.h">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseAnnouncePacket.h">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/ResponseConnectPacket.h">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnection4.h">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.cpp">
-			<Option target="CockTorrent"/>
-		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/TorrentConnectionv6.h">
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/peerhandshake.h">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/logger.cpp">
@@ -115,7 +88,19 @@
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/main.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/peerhandshake.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/responceannouncepacket.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/responceconnectpacket.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentbasefileinfo.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentconnectionv6.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/torrentmultiplefileinfo.cpp">

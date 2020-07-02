@@ -1,15 +1,9 @@
-#include "logger.h"
+#include "include/logger.h"
 #include <fstream>
 #include <string>
-#include "utilities.h"
+#include "include/utilities.h"
 
 const char *test() { return "HELLO"; }
-
-#include <fstream>
-#include <string>
-#include "logger.h"
-#include "utilities.h"
-
 Logger *Logger::get_instance() {
   static Logger logger;
   return &logger;

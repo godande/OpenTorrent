@@ -57,7 +57,7 @@ std::array<char, size> StringToCharArray(std::string_view symbols) {
     throw std::runtime_error{"Size mismatch"};
   }
   std::array<char, size> to_return{};
-  std::copy(symbols.begin(),symbols.end(),to_return.begin());
+  std::copy(symbols.begin(), symbols.end(), to_return.begin());
   return to_return;
 }
 

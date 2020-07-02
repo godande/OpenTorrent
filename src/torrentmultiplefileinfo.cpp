@@ -2,7 +2,7 @@
 // Created by Linux Oid on 28.04.2020.
 //
 
-#include "torrentmultiplefileInfo.h"
+#include "include/torrentmultiplefileInfo.h"
 
 TorrentMultipleFileInfo::TorrentMultipleFileInfo(
     const TorrentMultipleFileInfo::BencodeElement &el)
