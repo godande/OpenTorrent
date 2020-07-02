@@ -8,6 +8,7 @@
 #include "bencode.h"
 #include "bencodeelementadapter.h"
 
+namespace cocktorrent {
 /**
  * @class TorrentBaseFileInfo
  * @brief Класс с общей инфой для торрент файлов
@@ -19,7 +20,7 @@ class TorrentBaseFileInfo {
   using String = bencode::BencodeString;
   using Integer = bencode::BencodeInt;
   using BencodeElement = bencode::BencodeElement;
-  using BencodeAdapter = BencodeElementAdapter<const BencodeElement>;
+  using BencodeAdapter = bencode::BencodeElementAdapter<const BencodeElement>;
 
   TorrentBaseFileInfo() = delete;
 
@@ -39,5 +40,6 @@ class TorrentBaseFileInfo {
   String name_{};
   Integer piece_length_{};
 };
+}  // namespace cocktorrent
 
 #endif  // COCKTORRENT_TORRENTBASEFILEINFO_H

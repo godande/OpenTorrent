@@ -9,6 +9,7 @@
 #include <variant>
 #include "bencode.h"
 
+namespace cocktorrent::bencode {
 using BencodeCastError = std::bad_variant_access;
 template <class T>
 auto adapt(T *element);
@@ -73,26 +74,26 @@ BencodeElementAdapter<ElementType>::BencodeElementAdapter(ElementType *element)
     : element_(element) {}
 
 template <class ElementType>
-BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](const std::string &s) {
+BencodeElementAdapter<ElementType> BencodeElementAdapter<ElementType>::
+operator[](const std::string &s) {
   return BencodeElementAdapter(&dictionary().at(s));
 }
 
 template <class ElementType>
-BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](const std::string &s) const {
+BencodeElementAdapter<ElementType> BencodeElementAdapter<ElementType>::
+operator[](const std::string &s) const {
   return BencodeElementAdapter(&dictionary().at(s));
 }
 
 template <class ElementType>
-BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](SizeType index) const {
+BencodeElementAdapter<ElementType> BencodeElementAdapter<ElementType>::
+operator[](SizeType index) const {
   return BencodeElementAdapter(&list().at(index));
 }
 
 template <class ElementType>
-BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](SizeType index) {
+BencodeElementAdapter<ElementType> BencodeElementAdapter<ElementType>::
+operator[](SizeType index) {
   return BencodeElementAdapter(&list().at(index));
 }
 
@@ -145,5 +146,5 @@ template <class ElementType>
 ElementType *BencodeElementAdapter<ElementType>::element() const {
   return element_;
 }
-
+}  // namespace cocktorrent::bencode
 #endif  // COCKTORRENT_BENCODEELEMENTADAPTER_H

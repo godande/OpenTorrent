@@ -9,6 +9,7 @@
 #include "bencodeelementadapter.h"
 #include "torrentbasefileinfo.h"
 
+namespace cocktorrent {
 /**
  * @class TorrentSingleFileInfo
  * @brief Класс для хранения инфы в случае одного файлов
@@ -31,5 +32,6 @@ class TorrentSingleFileInfo : public TorrentBaseFileInfo {
  private:
   Integer length_{};
 };
+}  // namespace cocktorrent
 
 #endif  // COCKTORRENT_TORRENTSINGLEFILEINFO_H

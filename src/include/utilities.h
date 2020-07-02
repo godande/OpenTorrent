@@ -3,13 +3,18 @@
 
 #include <logger.h>
 #include <stdio.h>
+#include <boost/asio.hpp>
 #include <boost/endian/conversion.hpp>
 #include <chrono>
+#include <cstring>
 #include <ctime>
 #include <iomanip>
+#include <random>
 #include <string>
 
-namespace util {
+namespace cocktorrent::util {
+inline static std::mt19937 generator{std::random_device{}()};
+
 inline auto CurrentDate() {
   auto time = std::chrono::system_clock::now();
   auto tm = std::chrono::system_clock::to_time_t(time);
@@ -33,21 +38,16 @@ T NetworkToHost(T x) noexcept {
 
 template <class T>
 CharSequence<sizeof(T)> ToNetworkCharSequence(T x) {
-  union {
-    CharSequence<sizeof(T)> chars;
-    T value;
-  } converter;
-  converter.value = HostToNetwork(x);
-  return converter.chars;
+  CharSequence<sizeof(T)> chars;
+  x = HostToNetwork(x);
+  std::memcpy(chars.chars, &x, sizeof(T));
+  return chars;
 }
 template <class T>
 T FromNetworkCharSequence(CharSequence<sizeof(T)> bytes) {
-  union {
-    CharSequence<sizeof(T)> chars;
-    T value;
-  } converter;
-  converter.chars = bytes;
-  return NetworkToHost(converter.value);
+  T value;
+  std::memcpy(&value, bytes.chars, sizeof(T));
+  return NetworkToHost(value);
 }
 
 template <size_t size>
@@ -61,6 +61,22 @@ std::array<char, size> StringToCharArray(std::string_view symbols) {
   return to_return;
 }
 
-}  // namespace util
+template <class T>
+void Put(boost::asio::streambuf &buf, T el) {
+  buf.sputn(util::ToNetworkCharSequence(el).chars, sizeof(el));
+}
+
+template <size_t N>
+void Put(boost::asio::streambuf &buf, std::array<char, N> ar) {
+  buf.sputn(ar.data(), sizeof(ar));
+}
+
+template <class... T>
+void Put(boost::asio::streambuf &buf, T &&... els) {
+  [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
+      (Put(buf, std::forward<T>(els)), 0)...};
+}
+
+}  // namespace cocktorrent::util
 
 #endif  // UTILITIES_H

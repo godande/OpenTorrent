@@ -6,6 +6,8 @@
 #define COCKTORRENT_RESPONSECONNECTPACKET_H
 #include <boost/asio.hpp>
 #include <cinttypes>
+
+namespace cocktorrent::udp {
 class ResponseConnectPacket {
  public:
   ResponseConnectPacket(boost::asio::streambuf& buf, int32_t transactionID);
@@ -18,5 +20,6 @@ class ResponseConnectPacket {
   int32_t transactionID_{};
   int64_t connectionID_{};
 };
+}  // namespace cocktorrent::udp
 
 #endif  // COCKTORRENT_RESPONSECONNECTPACKET_H

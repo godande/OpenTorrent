@@ -8,7 +8,7 @@
 #include <vector>
 #include "logger.h"
 
-namespace bencode {
+namespace cocktorrent::bencode {
 
 struct BencodeElement;
 using BencodeInt = long long;
@@ -23,6 +23,6 @@ struct BencodeElement {
 BencodeElement Decode(std::string_view);
 std::string Encode(const BencodeElement&);
 
-}  // namespace bencode
+}  // namespace cocktorrent::bencode
 
 #endif  // BENCODE_H

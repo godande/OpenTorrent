@@ -2,18 +2,20 @@
 #include <boost/asio.hpp>
 #include <ios>
 #include <iostream>
-#include "include/announcepacket.h"
 #include "include/bencode.h"
 #include "include/bencodeelementadapter.h"
-#include "include/connectpacket.h"
 #include "include/logger.h"
-#include "include/responseannouncepacket.h"
 #include "include/torrentconnectionv6.h"
 #include "include/torrentmultiplefileInfo.h"
 #include "include/torrentsinglefileinfo.h"
+#include "include/udp/announcepacket.h"
+#include "include/udp/connectpacket.h"
+#include "include/udp/responseannouncepacket.h"
 #include "include/utilities.h"
 
 int main() {
+  using namespace cocktorrent;
+  using namespace cocktorrent::udp;
   std::ifstream input_file(
       "/home/prise/CLionProjects/CockTorrent/test-torrent-files/"
       "nsfw2.torrent",
@@ -61,18 +63,17 @@ int main() {
 
     std::array<char, 20> generated{};
     std::uniform_int_distribution<char> distribution;
-    std::generate(generated.begin(), generated.end(), [&distribution]() {
-      return distribution(TorrentConnectionv6::generator);
-    });
+    std::generate(generated.begin(), generated.end(),
+                  [&distribution]() { return distribution(util::generator); });
     std::array<char, 20> toSend{};
     SHA1(reinterpret_cast<const unsigned char*>(var.c_str()), var.size(),
          reinterpret_cast<unsigned char*>(toSend.data()));
     //  std::cout << var << '\n';
     std::cout << toSend.data() << '\n';
     std::uniform_int_distribution<uint32_t> distribution2;
-    AnnouncePacket sendAnnounce(
-        income.connectionID(), toSend, generated, 0, 0, 0, 2, 0,
-        distribution2(TorrentConnectionv6::generator), -1, 1337, 0);
+    AnnouncePacket sendAnnounce(income.connectionID(), toSend, generated, 0, 0,
+                                0, 2, 0, distribution2(util::generator), -1,
+                                1337, 0);
 
     socket_.send(sendAnnounce.buffer().data());
     boost::asio::streambuf buffer{};

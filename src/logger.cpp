@@ -3,7 +3,7 @@
 #include <string>
 #include "include/utilities.h"
 
-const char *test() { return "HELLO"; }
+namespace cocktorrent {
 Logger *Logger::get_instance() {
   static Logger logger;
   return &logger;
@@ -21,3 +21,4 @@ void Logger::Info(const std::string &msg) { Write("[INFO]", msg); }
 void Logger::Warning(const std::string &msg) { Write("[WARNING]", msg); }
 
 void Logger::Error(const std::string &msg) { Write("[ERROR]", msg); }
+}  // namespace cocktorrent

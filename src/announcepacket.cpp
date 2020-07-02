@@ -2,11 +2,13 @@
 // Created by prise on 6/28/20.
 //
 
-#include "include/announcepacket.h"
+#include "include/udp/announcepacket.h"
 #include <torrentconnectionv6.h>
 #include <boost/asio.hpp>
 #include <random>
 #include "utilities.h"
+
+namespace cocktorrent::udp {
 
 AnnouncePacket::AnnouncePacket(int64_t connectionId,
                                std::array<char, 20> infoHash,
@@ -29,32 +31,9 @@ AnnouncePacket::AnnouncePacket(int64_t connectionId,
       extensions_(extensions) {
   std::uniform_int_distribution<uint32_t> distribution;
   transactionID_ = distribution(TorrentConnectionv6::generator);
-  this->buffer_.sputn(util::ToNetworkCharSequence(connectionID_).chars,
-                      sizeof(int64_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(action_).chars,
-                      sizeof(int32_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(transactionID_).chars,
-                      sizeof(int32_t));
-  this->buffer_.sputn(infoHash_.data(), infoHash_.size());
-  this->buffer_.sputn(peerID_.data(), peerID_.size());
-  this->buffer_.sputn(util::ToNetworkCharSequence(downloaded_).chars,
-                      sizeof(int64_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(left_).chars,
-                      sizeof(int64_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(uploaded_).chars,
-                      sizeof(int64_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(event_).chars,
-                      sizeof(int32_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(ipAddress_).chars,
-                      sizeof(uint32_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(key_).chars,
-                      sizeof(uint32_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(numWant_).chars,
-                      sizeof(int32_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(port_).chars,
-                      sizeof(int16_t));
-  this->buffer_.sputn(util::ToNetworkCharSequence(extensions_).chars,
-                      sizeof(int16_t));
+  util::Put(buffer_, connectionID_, action_, transactionID_, infoHash_, peerID_,
+            downloaded_, left_, uploaded_, event_, ipAddress_, key_, numWant_,
+            port_, extensions_);
 }
 
 int64_t AnnouncePacket::connectionID() const { return connectionID_; }
@@ -86,3 +65,4 @@ uint16_t AnnouncePacket::port() const { return port_; }
 uint16_t AnnouncePacket::extensions() const { return extensions_; }
 
 const boost::asio::streambuf &AnnouncePacket::buffer() const { return buffer_; }
+}  // namespace cocktorrent::udp

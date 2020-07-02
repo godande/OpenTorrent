@@ -8,6 +8,8 @@
 #include <boost/asio.hpp>
 #include <cinttypes>
 #include <vector>
+
+namespace cocktorrent::udp {
 class ResponseAnnouncePacket {
  public:
   ResponseAnnouncePacket() = delete;
@@ -38,5 +40,5 @@ class ResponseAnnouncePacket {
   int32_t seeders_{};
   std::vector<Seed> peers_;
 };
-
+}  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_RESPONSEANNOUNCEPACKET_H

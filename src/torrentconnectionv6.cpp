@@ -8,6 +8,7 @@
 #include "logger.h"
 #include "utilities.h"
 
+namespace cocktorrent {
 void TorrentConnectionv6::HandShake() {}
 
 uint32_t TorrentConnectionv6::SendConnectRequest() {
@@ -47,3 +48,4 @@ void TorrentConnectionv6::SendAnnounceRequest() {
   std::ostream os(&buffer);
 }
 std::mt19937 TorrentConnectionv6::generator{std::random_device{}()};
+}  // namespace cocktorrent

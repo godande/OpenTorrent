@@ -4,6 +4,7 @@
 
 #include "include/torrentmultiplefileInfo.h"
 
+namespace cocktorrent {
 TorrentMultipleFileInfo::TorrentMultipleFileInfo(
     const TorrentMultipleFileInfo::BencodeElement &el)
     : TorrentBaseFileInfo(el),
@@ -59,3 +60,4 @@ TorrentMultipleFileInfo::File::ListFromBencode(
   return TorrentMultipleFileInfo::File::List{LasyIterator{el.cbegin()},
                                              LasyIterator{el.cend()}};
 }
+}  // namespace cocktorrent

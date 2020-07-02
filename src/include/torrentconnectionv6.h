@@ -9,6 +9,7 @@
 #include <memory>
 #include <random>
 
+namespace cocktorrent {
 class TorrentConnectionv6 : std::enable_shared_from_this<TorrentConnectionv6> {
  public:
   using IOService = boost::asio::io_service;
@@ -46,5 +47,6 @@ class TorrentConnectionv6 : std::enable_shared_from_this<TorrentConnectionv6> {
   Socket socket_;
   Timer timer_;
 };
+}  // namespace cocktorrent
 
 #endif  // COCKTORRENT_TORRENTCONNECTIONV6_H

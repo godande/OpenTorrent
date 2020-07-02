@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 
+namespace cocktorrent::peer::tcp {
 class PeerMessage {
  public:
   enum class Type {
@@ -16,7 +17,7 @@ class PeerMessage {
     REQUEST
   };
 
-  using Buffer = boost::asio::buffer;
+  using Buffer = boost::asio::streambuf;
 
   explicit PeerMessage(const Buffer &);
 
@@ -28,5 +29,6 @@ class PeerMessage {
   Type type_;
   Buffer payload_;
 };
+}  // namespace cocktorrent::peer::tcp
 
-#endif COCKTORRENT_MESSAGE_H
+#endif  // COCKTORRENT_MESSAGE_H

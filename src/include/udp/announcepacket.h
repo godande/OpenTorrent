@@ -8,6 +8,7 @@
 #include <cinttypes>
 #include "responseconnectpacket.h"
 
+namespace cocktorrent::udp {
 class AnnouncePacket {
  public:
   static constexpr int32_t action_ = 1;
@@ -62,4 +63,5 @@ class AnnouncePacket {
   uint16_t extensions_;
   boost::asio::streambuf buffer_{};
 };
+}  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_ANNOUNCEPACKET_H

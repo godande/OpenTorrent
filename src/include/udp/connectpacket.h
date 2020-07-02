@@ -7,6 +7,7 @@
 
 #include <boost/asio.hpp>
 
+namespace cocktorrent::udp {
 class ConnectPacket {
  public:
   ConnectPacket();
@@ -21,5 +22,5 @@ class ConnectPacket {
   int32_t transactionID_;
   boost::asio::streambuf buffer_;
 };
-
+}  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_CONNECTPACKET_H

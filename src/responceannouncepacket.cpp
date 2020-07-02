@@ -4,9 +4,10 @@
 
 #include <iostream>
 #include "include/logger.h"
-#include "include/responseannouncepacket.h"
+#include "include/udp/responseannouncepacket.h"
 #include "include/utilities.h"
 
+namespace cocktorrent::udp {
 ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf& buffer,
                                                int32_t transactionID) {
   if (buffer.size() < 20) {
@@ -63,3 +64,4 @@ const std::vector<ResponseAnnouncePacket::Seed>& ResponseAnnouncePacket::peers()
     const {
   return peers_;
 }
+}  // namespace cocktorrent::udp

@@ -4,6 +4,7 @@
 
 #include "torrentbasefileinfo.h"
 
+namespace cocktorrent {
 TorrentBaseFileInfo::TorrentBaseFileInfo(
     const TorrentBaseFileInfo::BencodeElement &el)
     : announce_(adapt(&el)["announce"].string()),
@@ -26,3 +27,4 @@ const TorrentBaseFileInfo::String &TorrentBaseFileInfo::name() const {
 TorrentBaseFileInfo::Integer TorrentBaseFileInfo::piece_length() const {
   return piece_length_;
 }
+}  // namespace cocktorrent

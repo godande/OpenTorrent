@@ -3,8 +3,10 @@
 //
 
 #include "include/logger.h"
-#include "include/responseconnectpacket.h"
+#include "include/udp/responseconnectpacket.h"
 #include "include/utilities.h"
+
+namespace cocktorrent::udp {
 
 int32_t ResponseConnectPacket::action() const { return action_; }
 int32_t ResponseConnectPacket::transactionID() const { return transactionID_; }
@@ -32,3 +34,4 @@ ResponseConnectPacket::ResponseConnectPacket(boost::asio::streambuf& buf,
     throw std::logic_error{"Action mismatch"};
   }
 }
+}  // namespace cocktorrent::udp

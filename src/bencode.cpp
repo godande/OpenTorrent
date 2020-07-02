@@ -18,7 +18,7 @@
     }                                                                 \
   } while (0)
 
-namespace bencode {
+namespace cocktorrent::bencode {
 
 BencodeElement ParseBencodeElement(std::string_view &);
 
@@ -117,29 +117,33 @@ BencodeDictionary ParseBencodeDictionary(std::string_view &expression) {
   return result;
 }
 
-std::string Encode(const BencodeElement& to_encode) {
-  auto a = std::visit([](auto&& arg) {
-    if constexpr(std::is_same_v<std::decay_t<decltype(arg)>,BencodeInt>) {
-      return "i" + std::to_string(arg) + "e";
-    } else if constexpr(std::is_same_v<std::decay_t<decltype(arg)>,BencodeString>) {
-      return std::to_string(arg.size()) + ":" + arg;
-    } else if constexpr(std::is_same_v<std::decay_t<decltype(arg)>,BencodeList>) {
-      std::string to_out{"l"};
-      for(const auto& x : arg) {
-        to_out += Encode(x);
-      }
-      to_out += "e";
-      return to_out;
-    } else {
-      std::string to_out{"d"};
-      for(const auto& x : arg) {
-        to_out += Encode({x.first}) + Encode({x.second});
-      }
-      to_out += "e";
-      return to_out;
-    }
-  }, to_encode.data);
+std::string Encode(const BencodeElement &to_encode) {
+  auto a = std::visit(
+      [](auto &&arg) {
+        if constexpr (std::is_same_v<std::decay_t<decltype(arg)>, BencodeInt>) {
+          return "i" + std::to_string(arg) + "e";
+        } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>,
+                                            BencodeString>) {
+          return std::to_string(arg.size()) + ":" + arg;
+        } else if constexpr (std::is_same_v<std::decay_t<decltype(arg)>,
+                                            BencodeList>) {
+          std::string to_out{"l"};
+          for (const auto &x : arg) {
+            to_out += Encode(x);
+          }
+          to_out += "e";
+          return to_out;
+        } else {
+          std::string to_out{"d"};
+          for (const auto &x : arg) {
+            to_out += Encode({x.first}) + Encode({x.second});
+          }
+          to_out += "e";
+          return to_out;
+        }
+      },
+      to_encode.data);
   return a;
 }
 
-}  // namespace bencode
+}  // namespace cocktorrent::bencode
