@@ -79,13 +79,13 @@
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/connectpacket.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
-		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/include/peerhandshake.h">
-			<Option target="CockTorrent"/>
-		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/logger.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/main.cpp">
+			<Option target="CockTorrent"/>
+		</Unit>
+		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/message.cpp">
 			<Option target="CockTorrent"/>
 		</Unit>
 		<Unit filename="/home/prise/CLionProjects/CockTorrent/src/peerhandshake.cpp">
