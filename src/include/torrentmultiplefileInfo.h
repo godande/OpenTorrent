@@ -5,10 +5,11 @@
 #ifndef COCKTORRENT_TORRENTMULTIPLEFILEINFO_H
 #define COCKTORRENT_TORRENTMULTIPLEFILEINFO_H
 
+#include <vector>
+
 #include "bencode.h"
 #include "bencodeelementadapter.h"
 #include "torrentbasefileinfo.h"
-#include <vector>
 
 /**
  * @class TorrentMultipleFileInfo
@@ -16,33 +17,32 @@
  * @author https://github.com/s3ponia
  */
 class TorrentMultipleFileInfo : public TorrentBaseFileInfo {
-public:
-    struct File;
-    using InfoDictionary = TorrentBaseFileInfo::Dictionary;
-    using String = TorrentBaseFileInfo::String;
-    using Integer = TorrentBaseFileInfo::Integer;
-    using List = std::vector<File>;
-    using BencodeElement = TorrentBaseFileInfo::BencodeElement;
-    using BencodeAdapter = TorrentBaseFileInfo::BencodeAdapter;
+ public:
+  struct File;
+  using InfoDictionary = TorrentBaseFileInfo::Dictionary;
+  using String = TorrentBaseFileInfo::String;
+  using Integer = TorrentBaseFileInfo::Integer;
+  using List = std::vector<File>;
+  using BencodeElement = TorrentBaseFileInfo::BencodeElement;
+  using BencodeAdapter = TorrentBaseFileInfo::BencodeAdapter;
 
-    struct File  {
-        using List = std::vector<String>;
+  struct File {
+    using List = std::vector<String>;
 
-        explicit File(BencodeElement const &dict);
+    explicit File(BencodeElement const &dict);
 
-        static List ListFromBencode(const BencodeAdapter::ListType &el);
+    static List ListFromBencode(const BencodeAdapter::ListType &el);
 
-        Integer length;
-        List path;
-    };
+    Integer length;
+    List path;
+  };
 
-    explicit TorrentMultipleFileInfo(BencodeElement const &el);
+  explicit TorrentMultipleFileInfo(BencodeElement const &el);
 
-    const List &files() const;
+  const List &files() const;
 
-private:
-    List files_;
+ private:
+  List files_;
 };
 
-
-#endif //COCKTORRENT_TORRENTMULTIPLEFILEINFO_H
+#endif  // COCKTORRENT_TORRENTMULTIPLEFILEINFO_H

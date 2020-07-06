@@ -14,31 +14,30 @@
  * @author https://github.com/s3ponia
  */
 class TorrentBaseFileInfo {
-public:
-    using Dictionary = bencode::BencodeDictionary;
-    using String = bencode::BencodeString;
-    using Integer = bencode::BencodeInt;
-    using BencodeElement = bencode::BencodeElement;
-    using BencodeAdapter = BencodeElementAdapter<const BencodeElement>;
+ public:
+  using Dictionary = bencode::BencodeDictionary;
+  using String = bencode::BencodeString;
+  using Integer = bencode::BencodeInt;
+  using BencodeElement = bencode::BencodeElement;
+  using BencodeAdapter = BencodeElementAdapter<const BencodeElement>;
 
-    TorrentBaseFileInfo() = delete;
+  TorrentBaseFileInfo() = delete;
 
-    explicit TorrentBaseFileInfo(BencodeElement const &el);
+  explicit TorrentBaseFileInfo(BencodeElement const &el);
 
-    const String &announce() const;
+  const String &announce() const;
 
-    const String &pieces() const;
+  const String &pieces() const;
 
-    const String &name() const;
+  const String &name() const;
 
-    Integer piece_length() const;
+  Integer piece_length() const;
 
-private:
-    String announce_{};
-    String pieces_{};
-    String name_{};
-    Integer piece_length_{};
+ private:
+  String announce_{};
+  String pieces_{};
+  String name_{};
+  Integer piece_length_{};
 };
 
-
-#endif //COCKTORRENT_TORRENTBASEFILEINFO_H
+#endif  // COCKTORRENT_TORRENTBASEFILEINFO_H
