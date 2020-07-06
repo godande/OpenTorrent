@@ -9,28 +9,29 @@
 #include "bencodeelementadapter.h"
 #include "torrentbasefileinfo.h"
 
+namespace cocktorrent {
 /**
  * @class TorrentSingleFileInfo
  * @brief Класс для хранения инфы в случае одного файлов
  * @author https://github.com/s3ponia
  */
 class TorrentSingleFileInfo : public TorrentBaseFileInfo {
-public:
-    using Dictionary = TorrentBaseFileInfo::Dictionary;
-    using String = TorrentBaseFileInfo::String;
-    using Integer = TorrentBaseFileInfo::Integer;
-    using BencodeElement = TorrentBaseFileInfo::BencodeElement;
-    using BencodeAdapter = TorrentBaseFileInfo::BencodeAdapter;
+ public:
+  using Dictionary = TorrentBaseFileInfo::Dictionary;
+  using String = TorrentBaseFileInfo::String;
+  using Integer = TorrentBaseFileInfo::Integer;
+  using BencodeElement = TorrentBaseFileInfo::BencodeElement;
+  using BencodeAdapter = TorrentBaseFileInfo::BencodeAdapter;
 
-    TorrentSingleFileInfo() = delete;
+  TorrentSingleFileInfo() = delete;
 
-    explicit TorrentSingleFileInfo(BencodeElement const &el);
+  explicit TorrentSingleFileInfo(BencodeElement const &el);
 
-    Integer length() const;
+  Integer length() const;
 
-private:
-    Integer length_{};
+ private:
+  Integer length_{};
 };
+}  // namespace cocktorrent
 
-
-#endif //COCKTORRENT_TORRENTSINGLEFILEINFO_H
+#endif  // COCKTORRENT_TORRENTSINGLEFILEINFO_H

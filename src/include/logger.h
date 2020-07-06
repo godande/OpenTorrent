@@ -6,31 +6,33 @@
 
 #define LOG_FILE_PATH "log.txt"
 
+namespace cocktorrent {
 class Logger {
-private:
-    std::ofstream file{LOG_FILE_PATH};
+ private:
+  std::ofstream file{LOG_FILE_PATH};
 
-public:
-    static Logger *get_instance();
+ public:
+  static Logger *get_instance();
 
-    void Debug(const std::string &);
+  void Debug(const std::string &);
 
-    void Info(const std::string &);
+  void Info(const std::string &);
 
-    void Warning(const std::string &);
+  void Warning(const std::string &);
 
-    void Error(const std::string &);
+  void Error(const std::string &);
 
-private:
-    ~Logger() = default;
+ private:
+  ~Logger() = default;
 
-    Logger() = default;
+  Logger() = default;
 
-    Logger(const Logger &);
+  Logger(const Logger &);
 
-    void Write(const std::string &, const std::string &);
+  void Write(const std::string &, const std::string &);
 
-    Logger &operator=(const Logger &) { return *this; };
+  Logger &operator=(const Logger &) { return *this; };
 };
+}  // namespace cocktorrent
 
-#endif //LOGGER_H
+#endif  // LOGGER_H

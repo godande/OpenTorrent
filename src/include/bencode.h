@@ -2,27 +2,27 @@
 #define BENCODE_H
 
 #include <map>
-#include <vector>
 #include <string>
 #include <string_view>
 #include <variant>
+#include <vector>
 #include "logger.h"
 
-namespace bencode {
+namespace cocktorrent::bencode {
 
-    struct  BencodeElement;
-    using   BencodeInt = long long;
-    using   BencodeString = std::string;
-    using   BencodeDictionary = std::map<BencodeString, BencodeElement>;
-    using   BencodeList = std::vector<BencodeElement>;
+struct BencodeElement;
+using BencodeInt = long long;
+using BencodeString = std::string;
+using BencodeDictionary = std::map<BencodeString, BencodeElement>;
+using BencodeList = std::vector<BencodeElement>;
 
-    struct BencodeElement {
-        std::variant<BencodeInt, BencodeString, BencodeDictionary, BencodeList> data;
-    };
+struct BencodeElement {
+  std::variant<BencodeInt, BencodeString, BencodeDictionary, BencodeList> data;
+};
 
-    BencodeElement  Decode(std::string_view);
-    std::string     Encode(const BencodeElement&);
+BencodeElement Decode(std::string_view);
+std::string Encode(const BencodeElement&);
 
-} // namespace bencode
+}  // namespace cocktorrent::bencode
 
-#endif // BENCODE_H
+#endif  // BENCODE_H
