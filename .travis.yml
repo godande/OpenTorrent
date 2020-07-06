@@ -1,0 +1,14 @@
+language: cpp
+compiler:
+  - clang++
+  - gcc
+addons:
+  apt:
+    sources:
+      - boost-latest
+    packages:
+      - libboost-all-dev
+      - libssl-dev
+      - cmake
+
+script: cmake CMakeLists.txt && make
