@@ -21,6 +21,7 @@ class TorrentBaseFileInfo {
   using Integer = bencode::BencodeInt;
   using BencodeElement = bencode::BencodeElement;
   using BencodeAdapter = bencode::BencodeElementAdapter<const BencodeElement>;
+  using InfoHashType = std::array<char, 20>;
 
   TorrentBaseFileInfo() = delete;
 
@@ -32,12 +33,15 @@ class TorrentBaseFileInfo {
 
   [[nodiscard]] const String &name() const;
 
+  [[nodiscard]] const InfoHashType &info_hash() const;
+
   Integer piece_length() const;
 
  private:
   String announce_{};
   String pieces_{};
   String name_{};
+  InfoHashType info_hash_{};
   Integer piece_length_{};
 };
 }  // namespace cocktorrent
