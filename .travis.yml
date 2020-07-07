@@ -4,13 +4,13 @@ addons:
     sources: 
       - boost-latest
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-7
+      - llvm-toolchain-trusty-9
       - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
         key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
       - g++-7
       - g++-9
-      - clang-7
+      - clang-9
       - libboost-all-dev
       - libssl-dev
       - cmake
