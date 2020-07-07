@@ -5,16 +5,20 @@ project(CockTorrent)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
 include_directories(src/include)
 SET(Boost_USE_STATIC_LIBS OFF)
 SET(Boost_USE_MULTITHREAD ON)
 FIND_PACKAGE(Boost REQUIRED COMPONENTS system thread regex)
 FIND_PACKAGE(OpenSSL REQUIRED COMPONENTS Crypto)
+FIND_PACKAGE(Threads REQUIRED)
 SET(BOOST_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
 file(GLOB SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Threads::Threads)
 
 set_target_properties(${PROJECT_NAME} 
   PROPERTIES
