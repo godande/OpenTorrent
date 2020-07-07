@@ -5,6 +5,7 @@ compiler:
 addons:
   apt:
     sources: 
+      - boost-latest
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-5.0
       - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
