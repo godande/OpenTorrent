@@ -6,12 +6,9 @@ addons:
   apt:
     sources:
       - boost-latest
-      - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main'
-        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
       - libboost-all-dev
       - libssl-dev
-      - clang-10
       - cmake
 
 script: cmake CMakeLists.txt && make
