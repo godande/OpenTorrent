@@ -1,6 +1,4 @@
 language: cpp
-compiler:
-  - gcc
 addons:
   apt:
     sources: 
@@ -12,11 +10,18 @@ addons:
     packages:
       - g++-7
       - g++-9
+      - clang++-9
+      - clang++-7
       - libboost-all-dev
       - libssl-dev
       - cmake
-env:
-  - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+compiler: clang
+  env:
+    - MATRIX_EVAL="CC=clang-9 && CXX=clang++-9"
+
+compiler: gcc
+  env:
+    - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
 
 before_install:
   - eval "${MATRIX_EVAL}"
