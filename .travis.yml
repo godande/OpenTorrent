@@ -4,14 +4,16 @@ compiler:
   - gcc
 addons:
   apt:
-    sources:
-      - boost-latest
+    sources: 
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-6.0
+      - llvm-toolchain-trusty-5.0
+      - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
+      - g++-7
+      - g++-8
       - libboost-all-dev
       - libssl-dev
       - cmake
-      - libstdc++-7-dev
 
 script: cmake CMakeLists.txt && make
