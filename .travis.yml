@@ -12,7 +12,6 @@ addons:
       - libboost-all-dev
       - libssl-dev
       - cmake
-      - clang-10
       - libstdc++-7-dev
 
 script: cmake CMakeLists.txt && make
