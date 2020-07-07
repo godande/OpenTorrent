@@ -15,5 +15,6 @@ addons:
       - libboost-all-dev
       - libssl-dev
       - cmake
+      - pthread
 
 script: cmake CMakeLists.txt && make
