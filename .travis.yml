@@ -6,9 +6,13 @@ addons:
   apt:
     sources:
       - boost-latest
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-6.0
     packages:
       - libboost-all-dev
       - libssl-dev
       - cmake
+      - clang-10
+      - libstdc++-7-dev
 
 script: cmake CMakeLists.txt && make
