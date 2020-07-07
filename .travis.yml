@@ -11,7 +11,7 @@ addons:
         key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
       - g++-7
-      - g++-8
+      - g++-9
       - libboost-all-dev
       - libssl-dev
       - cmake
