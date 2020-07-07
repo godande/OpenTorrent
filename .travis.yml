@@ -14,7 +14,7 @@ addons:
     packages:
       - g++-7
       - g++-9
-      - clang-9
+      - libclang-common-9-dev
       - libboost-all-dev
       - libssl-dev
       - cmake
