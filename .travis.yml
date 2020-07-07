@@ -1,24 +1,24 @@
 language: cpp
 compiler:
-  - clang++
   - gcc
-env: BUILD=Debug STANDARD=17 cxxflags="-DBOOST_TRAVISCI_BUILD"
-before_script:
-    - sudo apt-get update -qq
-    - sudo apt-get install clang++ g++ libboost-all-dev
-      #addons:
-      #  apt:
-      # sources: 
-      #- boost-latest
-      #- ubuntu-toolchain-r-test
-      #- llvm-toolchain-trusty-5.0
-      #- sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
-      #  key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-      # packages:
-      #- g++-7
-      #- g++-9
-      #- libboost-all-dev
-      #- libssl-dev
-      #- cmake
+addons:
+  apt:
+    sources: 
+      - boost-latest
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
+      - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+    packages:
+      - g++-7
+      - g++-9
+      - libboost-all-dev
+      - libssl-dev
+      - cmake
+    env:
+      - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
 
 script: cmake CMakeLists.txt && make
