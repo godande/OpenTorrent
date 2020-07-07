@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <random>
 #include <string>
+#include <string_view>
 
 namespace cocktorrent::util {
 inline static std::mt19937 generator{std::random_device{}()};
