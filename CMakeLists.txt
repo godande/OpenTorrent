@@ -16,7 +16,7 @@ FIND_PACKAGE(Threads REQUIRED)
 SET(BOOST_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
 file(GLOB SOURCES "src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} "src/main_file/main.cpp" ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 
@@ -26,3 +26,16 @@ set_target_properties(${PROJECT_NAME}
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+
+# Unit testing
+file(GLOB TEST_SOURCES "src/tests/*.cpp")
+add_executable(tests ${TEST_SOURCES} ${SOURCES})
+target_compile_definitions(tests PUBLIC
+  TEST_TORRENT_FILES_PATH=${PROJECT_SOURCE_DIR}/test-torrent-files)
+target_link_libraries(tests ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+target_link_libraries(tests Threads::Threads)
+set_target_properties(tests
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib" 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/bin")

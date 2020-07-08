@@ -2,7 +2,7 @@
 // Created by Linux Oid on 28.04.2020.
 //
 
-#include "include/torrentmultiplefileInfo.h"
+#include "torrentmultiplefileinfo.h"
 
 namespace cocktorrent {
 TorrentMultipleFileInfo::TorrentMultipleFileInfo(

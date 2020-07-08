@@ -26,4 +26,4 @@ matrix:
 before_install:
   - eval "${MATRIX_EVAL}"
 
-script: cmake CMakeLists.txt && make
+script: cmake CMakeLists.txt && make && ./tests/bin/tests
