@@ -86,7 +86,7 @@ BencodeString ParseBencodeString(std::string_view &expression) {
 
   expression.remove_prefix(1);
 
-  PARSE_EXCEPTION_IF(expression.size() < stringLen);
+  PARSE_EXCEPTION_IF(expression.size() < static_cast<std::uintmax_t>(stringLen));
 
   BencodeString result = std::string(expression.substr(0, stringLen));
   expression.remove_prefix(stringLen);

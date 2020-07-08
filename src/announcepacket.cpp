@@ -3,7 +3,6 @@
 //
 
 #include "include/udp/announcepacket.h"
-#include <torrentconnectionv6.h>
 #include <boost/asio.hpp>
 #include <random>
 #include "utilities.h"
@@ -30,7 +29,7 @@ AnnouncePacket::AnnouncePacket(int64_t connectionId,
       port_(port),
       extensions_(extensions) {
   std::uniform_int_distribution<uint32_t> distribution;
-  transactionID_ = distribution(TorrentConnectionv6::generator);
+  transactionID_ = distribution(util::generator);
   util::Put(buffer_, connectionID_, action_, transactionID_, infoHash_, peerID_,
             downloaded_, left_, uploaded_, event_, ipAddress_, key_, numWant_,
             port_, extensions_);

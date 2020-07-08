@@ -3,7 +3,6 @@
 //
 
 #include "include/peerhandshake.h"
-#include "include/torrentconnectionv6.h"
 #include "include/utilities.h"
 
 namespace cocktorrent::peer::tcp {

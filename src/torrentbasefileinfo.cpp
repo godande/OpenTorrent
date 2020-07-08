@@ -5,17 +5,20 @@
 #include "torrentbasefileinfo.h"
 #include <openssl/sha.h>
 #include "bencode.h"
+#include "utilities.h"
 
 namespace cocktorrent {
 TorrentBaseFileInfo::TorrentBaseFileInfo(
     const TorrentBaseFileInfo::BencodeElement &el)
     : announce_(adapt(&el)["announce"].string()),
+      pieces_(adapt(&el)["info"]["pieces"].string()),
       name_(adapt(&el)["info"]["name"].string()),
-      piece_length_(adapt(&el)["info"]["piece length"].integer()),
-      pieces_(adapt(&el)["info"]["pieces"].string()) {
+      piece_length_(adapt(&el)["info"]["piece length"].integer()) {
   auto var = bencode::Encode(*adapt(&el)["info"].element());
-  SHA1(reinterpret_cast<const unsigned char *>(var.c_str()), var.size(),
-       reinterpret_cast<unsigned char *>(info_hash_.data()));
+  auto temp_v = util::ToVector<unsigned char>(var);
+  std::array<unsigned char, 20> temp_array;
+  SHA1(temp_v.data(), temp_v.size(), temp_array.data());
+  std::copy(temp_v.begin(), temp_v.end(), info_hash_.data());
 }
 
 const TorrentBaseFileInfo::String &TorrentBaseFileInfo::announce() const {
