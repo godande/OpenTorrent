@@ -1,2 +1,2 @@
-# CockTorrent
-Torrent client from super noobs
+# OpenTorrent
+Opensource Torrent client
