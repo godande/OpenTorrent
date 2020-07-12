@@ -1,4 +1,5 @@
 #include "bencode.h"
+#include <iostream>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -23,5 +24,7 @@ TEST_CASE("Bencode", "[bencode]") {
                   auto decoded = cocktorrent::bencode::Decode(bencode_str);
                   auto encoded = cocktorrent::bencode::Encode(decoded);
                   auto decoded_twice = cocktorrent::bencode::Decode(encoded);
+				  REQUIRE(decoded == decoded_twice);
+				  REQUIRE(bencode_str == encoded);
                 });
 }
