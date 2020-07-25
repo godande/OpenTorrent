@@ -4,9 +4,9 @@
 
 #include "torrentbasefileinfo.h"
 #include <openssl/sha.h>
+#include <variant>
 #include "bencode.h"
 #include "utilities.h"
-#include <variant>
 
 namespace cocktorrent {
 TorrentBaseFileInfo::TorrentBaseFileInfo(
@@ -23,12 +23,17 @@ TorrentBaseFileInfo::TorrentBaseFileInfo(
 
   auto adapted = adapt(&el).dictionary();
   auto it = adapted.find("announce-list");
-  if(it != adapted.end()) {
+  if (it != adapted.end()) {
     auto list = std::get_if<bencode::BencodeList>(&it->second.data);
     if (list != nullptr) {
       std::for_each(list->begin(), list->end(), [&](auto &&el) {
-        if (auto el_str = std::get_if<bencode::BencodeString>(&el.data))
-          announce_list_.push_back(std::forward<decltype(*el_str)>(*el_str));
+        if (auto sublist = std::get_if<bencode::BencodeList>(&el.data)) {
+          std::for_each(sublist->begin(), sublist->end(), [&](auto &&el) {
+            if (auto &&el_str = std::get_if<bencode::BencodeString>(&el.data))
+              announce_list_.push_back(
+                  std::forward<decltype(*el_str)>(*el_str));
+          });
+        }
       });
     }
   }

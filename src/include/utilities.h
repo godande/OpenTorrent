@@ -2,22 +2,24 @@
 #define UTILITIES_H
 
 #include <logger.h>
+#include <algorithm>
 #include <boost/asio.hpp>
 #include <boost/endian/conversion.hpp>
+#include <charconv>
 #include <chrono>
 #include <cstring>
 #include <ctime>
 #include <random>
 #include <string>
 #include <string_view>
-#include <vector>
-#include <charconv>
 #include <type_traits>
+#include <vector>
 
 namespace cocktorrent::util {
 inline ::std::mt19937 generator{::std::random_device{}()};
-template<class T>
-using EnableIfIntegral = ::std::enable_if<::std::is_integral_v<T>>;
+template <class T>
+using EnableIfIntegral =
+    ::std::enable_if<::std::is_integral_v<::std::decay_t<T>>>;
 
 inline auto CurrentDate() {
   auto time = ::std::chrono::system_clock::now();
@@ -26,15 +28,29 @@ inline auto CurrentDate() {
 }
 
 inline ::std::vector<::boost::asio::ip::udp::endpoint> GetUDPEndPoints(
-    ::std::string_view url) {
+    ::std::string_view url, ::boost::asio::io_context &io_context) {
   ::std::vector<::boost::asio::ip::udp::endpoint> result{};
+  std::string_view domain;
+  std::string_view port;
   if (url.find("udp://") == 0) {
     url.remove_prefix(sizeof("udp://") - 1);
     auto start_port = url.find(":");
-    auto domain = url.substr(0, start_port);
-    int port;
-    auto res = ::std::from_chars(domain.begin(), domain.end(), port);
+    domain = url.substr(0, start_port);
+    auto sv = url.begin() + start_port + 1;
+    auto it = sv;
+    while (std::isdigit(*it)) ++it;
+    port = url.substr(start_port + 1, it - sv);
+  } else {
+    return result;
   }
+
+  ::boost::asio::ip::udp::resolver resolver{io_context};
+
+  using iterator = ::boost::asio::ip::udp::resolver::iterator;
+  for (iterator i = resolver.resolve(domain, port); i != iterator{}; ++i) {
+    result.push_back(i->endpoint());
+  }
+
   return result;
 }
 
