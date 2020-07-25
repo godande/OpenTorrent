@@ -30,7 +30,7 @@ TEST_CASE("Get peers", "[tracker]") {
   boost::asio::ip::udp::socket socket_{io_service};
   boost::asio::ip::udp::resolver resolver(io_service);
   boost::asio::ip::udp::resolver::query query(
-      "9.rarbg.me", "2930",
+      "9.rarbg.me", "2860",
       boost::asio::ip::resolver_query_base::numeric_service);
   std::intmax_t peer_size{};
   for (auto i = resolver.resolve(query);

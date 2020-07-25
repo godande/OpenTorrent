@@ -7,6 +7,7 @@
 
 #include "bencode.h"
 #include "bencodeelementadapter.h"
+#include <vector>
 
 namespace cocktorrent {
 /**
@@ -21,24 +22,40 @@ class TorrentBaseFileInfo {
   using Integer = bencode::BencodeInt;
   using BencodeElement = bencode::BencodeElement;
   using BencodeAdapter = bencode::BencodeElementAdapter<const BencodeElement>;
+  using AnnounceList = std::vector<std::string>;
   using InfoHashType = std::array<char, 20>;
 
   TorrentBaseFileInfo() = delete;
 
   explicit TorrentBaseFileInfo(BencodeElement const &el);
 
-  [[nodiscard]] const String &announce() const;
+  [[nodiscard]] const String &announce() const {
+    return announce_;
+  }
 
-  [[nodiscard]] const String &pieces() const;
+  [[nodiscard]] const AnnounceList &announce_list() const {
+    return announce_list_;
+  }
 
-  [[nodiscard]] const String &name() const;
+  [[nodiscard]] const String &pieces() const {
+    return pieces_;
+  }
 
-  [[nodiscard]] const InfoHashType &info_hash() const;
+  [[nodiscard]] const String &name() const {
+    return name_;
+  }
 
-  Integer piece_length() const;
+  [[nodiscard]] const InfoHashType &info_hash() const {
+    return info_hash_;
+  }
+
+  [[nodiscard]] Integer piece_length() const {
+    return piece_length_;
+  }
 
  private:
   String announce_{};
+  AnnounceList announce_list_{};
   String pieces_{};
   String name_{};
   InfoHashType info_hash_{};

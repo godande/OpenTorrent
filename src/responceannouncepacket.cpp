@@ -2,7 +2,6 @@
 // Created by prise on 6/28/20.
 //
 
-#include <iostream>
 #include "include/logger.h"
 #include "include/udp/responseannouncepacket.h"
 #include "include/utilities.h"
@@ -44,8 +43,6 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf& buffer,
                           util::FromNetworkCharSequence<uint16_t>(portBuf)};
     if (to_return.port || to_return.ip) {
       peers_.push_back(to_return);
-      std::cout << util::ToNetworkCharSequence<int32_t>(to_return.ip).chars
-                << '\n';
     }
   }
 }
