@@ -12,10 +12,6 @@ PeerHandshake::PeerHandshake(const std::array<char, 20> &info_hash)
   std::generate(peer_id_.begin() + 8, peer_id_.end(),
                 [&rand]() { return rand(util::generator); });
 
-  buffer_.sputc(pstrlen);
-  buffer_.sputn(protocol_id.data(), protocol_id.size());
-  buffer_.sputn(util::ToNetworkCharSequence(PeerHandshake::reserved).chars, 8);
-  buffer_.sputn(info_hash_.data(), 20);
-  buffer_.sputn(peer_id_.data(), 20);
+  util::Put(buffer_, pstrlen, protocol_id, reserved, info_hash_, peer_id_);
 }
 }  // namespace cocktorrent::peer::tcp
