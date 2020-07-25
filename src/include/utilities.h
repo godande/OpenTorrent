@@ -7,6 +7,7 @@
 #include <boost/endian/conversion.hpp>
 #include <charconv>
 #include <chrono>
+#include <iomanip>
 #include <cstring>
 #include <ctime>
 #include <random>
