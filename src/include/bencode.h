@@ -6,10 +6,9 @@
 #include <string_view>
 #include <variant>
 #include <vector>
-
 #include "logger.h"
 
-namespace bencode {
+namespace cocktorrent::bencode {
 
 struct BencodeElement;
 using BencodeInt = long long;
@@ -21,9 +20,12 @@ struct BencodeElement {
   std::variant<BencodeInt, BencodeString, BencodeDictionary, BencodeList> data;
 };
 
+constexpr bool operator==(const BencodeElement &lhs, const BencodeElement &rhs) {
+  return lhs.data == rhs.data;
+}
+
 BencodeElement Decode(std::string_view);
 std::string Encode(const BencodeElement&);
-
-}  // namespace bencode
+}  // namespace cocktorrent::bencode
 
 #endif  // BENCODE_H

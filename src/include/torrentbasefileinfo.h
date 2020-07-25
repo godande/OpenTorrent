@@ -7,7 +7,9 @@
 
 #include "bencode.h"
 #include "bencodeelementadapter.h"
+#include <vector>
 
+namespace cocktorrent {
 /**
  * @class TorrentBaseFileInfo
  * @brief Класс с общей инфой для торрент файлов
@@ -19,25 +21,46 @@ class TorrentBaseFileInfo {
   using String = bencode::BencodeString;
   using Integer = bencode::BencodeInt;
   using BencodeElement = bencode::BencodeElement;
-  using BencodeAdapter = BencodeElementAdapter<const BencodeElement>;
+  using BencodeAdapter = bencode::BencodeElementAdapter<const BencodeElement>;
+  using AnnounceList = std::vector<std::string>;
+  using InfoHashType = std::array<char, 20>;
 
   TorrentBaseFileInfo() = delete;
 
   explicit TorrentBaseFileInfo(BencodeElement const &el);
 
-  const String &announce() const;
+  [[nodiscard]] const String &announce() const {
+    return announce_;
+  }
 
-  const String &pieces() const;
+  [[nodiscard]] const AnnounceList &announce_list() const {
+    return announce_list_;
+  }
 
-  const String &name() const;
+  [[nodiscard]] const String &pieces() const {
+    return pieces_;
+  }
 
-  Integer piece_length() const;
+  [[nodiscard]] const String &name() const {
+    return name_;
+  }
+
+  [[nodiscard]] const InfoHashType &info_hash() const {
+    return info_hash_;
+  }
+
+  [[nodiscard]] Integer piece_length() const {
+    return piece_length_;
+  }
 
  private:
   String announce_{};
+  AnnounceList announce_list_{};
   String pieces_{};
   String name_{};
+  InfoHashType info_hash_{};
   Integer piece_length_{};
 };
+}  // namespace cocktorrent
 
 #endif  // COCKTORRENT_TORRENTBASEFILEINFO_H

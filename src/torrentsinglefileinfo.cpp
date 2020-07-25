@@ -4,6 +4,7 @@
 
 #include "torrentsinglefileinfo.h"
 
+namespace cocktorrent {
 TorrentSingleFileInfo::TorrentSingleFileInfo(
     const TorrentSingleFileInfo::BencodeElement &el)
     : TorrentBaseFileInfo(el),
@@ -12,3 +13,4 @@ TorrentSingleFileInfo::TorrentSingleFileInfo(
 TorrentSingleFileInfo::Integer TorrentSingleFileInfo::length() const {
   return length_;
 }
+}  // namespace cocktorrent

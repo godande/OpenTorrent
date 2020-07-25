@@ -7,9 +7,9 @@
 
 #include <exception>
 #include <variant>
-
 #include "bencode.h"
 
+namespace cocktorrent::bencode {
 using BencodeCastError = std::bad_variant_access;
 template <class T>
 auto adapt(T *element);
@@ -29,13 +29,15 @@ class BencodeElementAdapter {
   BencodeElementAdapter(const BencodeElementAdapter &) = delete;
   BencodeElementAdapter &operator=(BencodeElementAdapter &) = delete;
 
-  BencodeElementAdapter operator[](const std::string &s);
+  BencodeElementAdapter operator[](const StringType &s);
 
-  BencodeElementAdapter operator[](const std::string &s) const;
+  BencodeElementAdapter operator[](const StringType &s) const;
 
   BencodeElementAdapter operator[](SizeType index);
 
   BencodeElementAdapter operator[](SizeType index) const;
+
+  [[nodiscard]] bool Contains(const StringType &s) const;
 
   auto &integer();
 
@@ -75,13 +77,13 @@ BencodeElementAdapter<ElementType>::BencodeElementAdapter(ElementType *element)
 
 template <class ElementType>
 BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](const std::string &s) {
+BencodeElementAdapter<ElementType>::operator[](const StringType &s) {
   return BencodeElementAdapter(&dictionary().at(s));
 }
 
 template <class ElementType>
 BencodeElementAdapter<ElementType>
-BencodeElementAdapter<ElementType>::operator[](const std::string &s) const {
+BencodeElementAdapter<ElementType>::operator[](const StringType &s) const {
   return BencodeElementAdapter(&dictionary().at(s));
 }
 
@@ -147,4 +149,10 @@ ElementType *BencodeElementAdapter<ElementType>::element() const {
   return element_;
 }
 
+template <class ElementType>
+bool BencodeElementAdapter<ElementType>::Contains(
+    const BencodeElementAdapter::StringType &s) const {
+  return dictionary().find(s) != dictionary().end();
+}
+}  // namespace cocktorrent::bencode
 #endif  // COCKTORRENT_BENCODEELEMENTADAPTER_H

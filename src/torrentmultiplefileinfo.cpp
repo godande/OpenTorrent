@@ -2,8 +2,8 @@
 // Created by Linux Oid on 28.04.2020.
 //
 
-#include "torrentmultiplefileInfo.h"
-
+#include "torrentmultiplefileinfo.h"
+namespace cocktorrent {
 TorrentMultipleFileInfo::TorrentMultipleFileInfo(
     const TorrentMultipleFileInfo::BencodeElement &el)
     : TorrentBaseFileInfo(el),
@@ -59,3 +59,4 @@ TorrentMultipleFileInfo::File::ListFromBencode(
   return TorrentMultipleFileInfo::File::List{LasyIterator{el.cbegin()},
                                              LasyIterator{el.cend()}};
 }
+}  // namespace cocktorrent
