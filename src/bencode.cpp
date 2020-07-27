@@ -1,4 +1,5 @@
 #include "bencode.h"
+
 #include <charconv>
 #include <exception>
 #include <map>
@@ -7,6 +8,7 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
+
 #include "logger.h"
 
 #define PARSE_EXCEPTION_IF(CONDITION)                                 \

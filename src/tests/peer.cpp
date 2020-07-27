@@ -1,26 +1,23 @@
-#include "../third-party/include/catch.hpp"
+#include <torrentsinglefileinfo.h>
+#include <udp/trackerconnection.h>
 #include <boost/asio.hpp>
 #include <ios>
+#include <iostream>
+#include <string>
+#include "../third-party/include/catch.hpp"
 #include "bencode.h"
-#include "bencodeelementadapter.h"
 #include "logger.h"
 #include "torrentmultiplefileinfo.h"
-#include "torrentsinglefileinfo.h"
-#include "udp/announcepacket.h"
-#include "udp/connectpacket.h"
-#include "udp/responseconnectpacket.h"
-#include "udp/responseannouncepacket.h"
 #include "utilities.h"
 
 #define STRINGIFY2(X) #X
 #define STRINGIFY(X) STRINGIFY2(X)
 
-TEST_CASE("Get peers", "[tracker]") {
+TEST_CASE("Get peers", "[torrent][tracker]") {
   using namespace cocktorrent;
   using namespace cocktorrent::udp;
-  std::ifstream input_file(
-      STRINGIFY(TEST_TORRENT_FILES_PATH)"/nsfw2.torrent",
-      std::ios::binary | std::ifstream::in);
+  std::ifstream input_file(STRINGIFY(TEST_TORRENT_FILES_PATH) "/nsfw2.torrent",
+                           std::ios::binary | std::ifstream::in);
   std::string expression{std::istreambuf_iterator<char>{input_file},
                          std::istreambuf_iterator<char>{}};
   auto res = bencode::Decode(expression);
@@ -28,41 +25,30 @@ TEST_CASE("Get peers", "[tracker]") {
   input_file.close();
   boost::asio::io_service io_service;
   boost::asio::ip::udp::socket socket_{io_service};
-  boost::asio::ip::udp::resolver resolver(io_service);
-  boost::asio::ip::udp::resolver::query query(
-      "9.rarbg.me", "2860",
-      boost::asio::ip::resolver_query_base::numeric_service);
-  std::intmax_t peer_size{};
-  for (auto i = resolver.resolve(query);
-       i != boost::asio::ip::udp::resolver::iterator(); ++i) {
-    i = resolver.resolve(query);
-    boost::asio::ip::udp::endpoint end = *i;
-    socket_.connect(end);
-    ConnectPacket sendPacket{};
-    socket_.send(sendPacket.buffer().data());
-    boost::asio::streambuf buf{16};
-    socket_.receive(buf.prepare(16));
-    buf.commit(16);
-    ResponseConnectPacket income(buf, sendPacket.transactionID());
+  auto endpoints = util::GetUDPEndPoints(s_file_s_info.announce(), io_service);
+  auto an_list_it = s_file_s_info.announce_list().begin();
+  std::size_t peer_size{};
+  while (an_list_it + 1 != s_file_s_info.announce_list().end()) {
+    if (util::IsUdp(*an_list_it))
+      endpoints = util::GetUDPEndPoints(*an_list_it, io_service);
+    ++an_list_it;
 
-    std::array<char, 20> generated{};
-    std::uniform_int_distribution<char> distribution;
-    std::generate(generated.begin(), generated.end(),
-                  [&distribution]() { return distribution(util::generator); });
-    std::uniform_int_distribution<uint32_t> distribution2;
-    AnnouncePacket sendAnnounce(
-        income.connectionID(), s_file_s_info.info_hash(), generated, 0, 0, 0,
-        2, 0, distribution2(util::generator), -1, 1337, 0);
+    if (!endpoints.empty()) {
+      TrackerConnection::DeadLineTimer deadline{io_service};
+      deadline.expires_from_now(boost::asio::chrono::seconds(5));
+      TrackerConnection tracker_connection{io_service,
+                                           s_file_s_info.info_hash()};
+      deadline.async_wait(
+          [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
+            Logger::get_instance()->Error(ec.message());
+            io_service.stop();
+            peer_size += tracker_connection.peers().size();
+          });
+      tracker_connection.Run(endpoints);
 
-    socket_.send(sendAnnounce.buffer().data());
-    boost::asio::streambuf buffer{};
-    socket_.receive(buffer.prepare(140));
-    buffer.commit(140);
-    ResponseAnnouncePacket receivePacket(buffer, sendAnnounce.transactionID());
-    peer_size += receivePacket.peers().size();
-    if (peer_size > 0) {
-      break;
+      io_service.run();
     }
   }
+
   REQUIRE(peer_size > 0);
 }

@@ -10,7 +10,7 @@
 namespace cocktorrent::udp {
 class ResponseConnectPacket {
  public:
-  ResponseConnectPacket(boost::asio::streambuf& buf, int32_t transactionID);
+  ResponseConnectPacket(const boost::asio::const_buffer &buf, int32_t transactionID);
   [[nodiscard]] int32_t action() const;
   [[nodiscard]] int32_t transactionID() const;
   [[nodiscard]] int64_t connectionID() const;

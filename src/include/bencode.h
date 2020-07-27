@@ -26,7 +26,6 @@ constexpr bool operator==(const BencodeElement &lhs, const BencodeElement &rhs) 
 
 BencodeElement Decode(std::string_view);
 std::string Encode(const BencodeElement&);
-
 }  // namespace cocktorrent::bencode
 
 #endif  // BENCODE_H

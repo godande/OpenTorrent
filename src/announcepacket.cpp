@@ -63,5 +63,5 @@ uint16_t AnnouncePacket::port() const { return port_; }
 
 uint16_t AnnouncePacket::extensions() const { return extensions_; }
 
-const boost::asio::streambuf &AnnouncePacket::buffer() const { return buffer_; }
+const AnnouncePacket::BufferType &AnnouncePacket::buffer() const { return buffer_; }
 }  // namespace cocktorrent::udp

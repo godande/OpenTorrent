@@ -13,6 +13,8 @@ class AnnouncePacket {
  public:
   static constexpr int32_t action_ = 1;
 
+  using BufferType = std::array<char, 100>;
+
   AnnouncePacket(int64_t connectionId, std::array<char, 20> infoHash,
                  std::array<char, 20> peerId, int64_t downloaded, int64_t left,
                  int64_t uploaded, int32_t event, uint32_t ipAddress,
@@ -45,7 +47,7 @@ class AnnouncePacket {
 
   [[nodiscard]] uint16_t extensions() const;
 
-  [[nodiscard]] const boost::asio::streambuf &buffer() const;
+  [[nodiscard]] const BufferType &buffer() const;
 
  private:
   int64_t connectionID_;
@@ -61,7 +63,7 @@ class AnnouncePacket {
   int32_t numWant_;
   uint16_t port_;
   uint16_t extensions_;
-  boost::asio::streambuf buffer_{};
+  BufferType buffer_{};
 };
 }  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_ANNOUNCEPACKET_H

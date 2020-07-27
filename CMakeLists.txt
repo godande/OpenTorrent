@@ -4,7 +4,7 @@ project(CockTorrent)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Werror -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Werror -Wextra -fsanitize=address")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
@@ -17,26 +17,30 @@ FIND_PACKAGE(Threads REQUIRED)
 SET(BOOST_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
 file(GLOB SOURCES "src/*.cpp")
-add_executable(${PROJECT_NAME} "src/main_file/main.cpp" ${SOURCES} src/include/peertransfer.h)
+add_executable(${PROJECT_NAME} "src/main_file/main.cpp" ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 
-set_target_properties(${PROJECT_NAME} 
+set_target_properties(${PROJECT_NAME}
   PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" 
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 
 # Unit testing
 file(GLOB TEST_SOURCES "src/tests/*.cpp")
+<<<<<<< HEAD
 add_executable(tests ${TEST_SOURCES} ${SOURCES} src/peertransfer.cpp)
+=======
+add_executable(tests ${TEST_SOURCES} ${SOURCES} src/trackerconnection.cpp)
+>>>>>>> master
 target_compile_definitions(tests PUBLIC
   TEST_TORRENT_FILES_PATH=${PROJECT_SOURCE_DIR}/test-torrent-files)
 target_link_libraries(tests ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(tests Threads::Threads)
 set_target_properties(tests
   PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib" 
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/bin")

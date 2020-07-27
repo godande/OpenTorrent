@@ -7,40 +7,40 @@
 #include "include/utilities.h"
 
 namespace cocktorrent::udp {
-ResponseAnnouncePacket::ResponseAnnouncePacket(boost::asio::streambuf& buffer,
-                                               int32_t transactionID) {
+ResponseAnnouncePacket::ResponseAnnouncePacket(
+    const boost::asio::const_buffer& buffer, int32_t transactionID) {
   if (buffer.size() < 20) {
     Logger::get_instance()->Error("Bad packet");
     throw std::runtime_error{"Bad packet"};
   }
-  util::CharSequence<4> tempBuf{};
-  util::CharSequence<2> portBuf{};
+  std::string_view buff_view{static_cast<const char*>(buffer.data()),
+                             buffer.size()};
+  action_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
+  buff_view.remove_prefix(4);
 
-  buffer.sgetn(tempBuf.chars, 4);
-  this->action_ = util::FromNetworkCharSequence<int32_t>(tempBuf);
+  transactionID_ =
+      util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
+  buff_view.remove_prefix(4);
 
-  buffer.sgetn(tempBuf.chars, 4);
-  this->transactionID_ = util::FromNetworkCharSequence<int32_t>(tempBuf);
-
-  if (this->transactionID_ != transactionID) {
-    Logger::get_instance()->Error("Transaction ID mismatch");
-    throw std::runtime_error{"Transaction ID mismatch"};
+  if (transactionID_ != transactionID) {
+    Logger::get_instance()->Error("ResponseAnnouncePacket: Transaction ID mismatch");
+    throw std::runtime_error{"ResponseAnnouncePacket: Transaction ID mismatch"};
   }
 
-  buffer.sgetn(tempBuf.chars, 4);
-  this->interval_ = util::FromNetworkCharSequence<int32_t>(tempBuf);
+  interval_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
+  buff_view.remove_prefix(4);
 
-  buffer.sgetn(tempBuf.chars, 4);
-  this->leechers_ = util::FromNetworkCharSequence<int32_t>(tempBuf);
+  leechers_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
+  buff_view.remove_prefix(4);
 
-  buffer.sgetn(tempBuf.chars, 4);
-  this->seeders_ = util::FromNetworkCharSequence<int32_t>(tempBuf);
+  seeders_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
+  buff_view.remove_prefix(4);
 
-  while (buffer.size() > 0) {
-    buffer.sgetn(tempBuf.chars, 4);
-    buffer.sgetn(portBuf.chars, 2);
-    auto to_return = Seed{util::FromNetworkCharSequence<uint32_t>(tempBuf),
-                          util::FromNetworkCharSequence<uint16_t>(portBuf)};
+  while (buff_view.size() >= 6) {
+    auto to_return =
+        Seed{util::FromNetworkCharSequence<uint32_t>(buff_view.substr(0, 4)),
+             util::FromNetworkCharSequence<uint16_t>(buff_view.substr(4, 2))};
+    buff_view.remove_prefix(6);
     if (to_return.port || to_return.ip) {
       peers_.push_back(to_return);
     }

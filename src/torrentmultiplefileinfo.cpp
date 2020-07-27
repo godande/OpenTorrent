@@ -3,7 +3,6 @@
 //
 
 #include "torrentmultiplefileinfo.h"
-
 namespace cocktorrent {
 TorrentMultipleFileInfo::TorrentMultipleFileInfo(
     const TorrentMultipleFileInfo::BencodeElement &el)

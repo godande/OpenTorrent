@@ -15,5 +15,7 @@ ConnectPacket::ConnectPacket() {
 int64_t ConnectPacket::connectionID() { return connectionID_; }
 int32_t ConnectPacket::actionID() { return actionID_; }
 int32_t ConnectPacket::transactionID() const { return transactionID_; }
-const boost::asio::streambuf& ConnectPacket::buffer() const { return buffer_; }
+const ConnectPacket::BufferType& ConnectPacket::buffer() const {
+  return buffer_;
+}
 }  // namespace cocktorrent::udp

@@ -9,6 +9,8 @@
 #include <chrono>
 #include <cstring>
 #include <ctime>
+#include <iomanip>
+#include <iostream>
 #include <random>
 #include <string>
 #include <string_view>
@@ -27,12 +29,13 @@ inline auto CurrentDate() {
   return ::std::put_time(::std::localtime(&tm), "%Y-%m-%d %H:%M:%S");
 }
 
-inline ::std::vector<::boost::asio::ip::udp::endpoint> GetUDPEndPoints(
+inline bool IsUdp(::std::string_view url) { return url.find("udp://") == 0; }
+
+inline ::boost::asio::ip::udp::resolver::results_type GetUDPEndPoints(
     ::std::string_view url, ::boost::asio::io_context &io_context) {
-  ::std::vector<::boost::asio::ip::udp::endpoint> result{};
   std::string_view domain;
   std::string_view port;
-  if (url.find("udp://") == 0) {
+  if (IsUdp(url)) {
     url.remove_prefix(sizeof("udp://") - 1);
     auto start_port = url.find(":");
     domain = url.substr(0, start_port);
@@ -41,19 +44,13 @@ inline ::std::vector<::boost::asio::ip::udp::endpoint> GetUDPEndPoints(
     while (std::isdigit(*it)) ++it;
     port = url.substr(start_port + 1, it - sv);
   } else {
-    return result;
+    return {};
   }
 
   ::boost::asio::ip::udp::resolver resolver{io_context};
 
-  using iterator = ::boost::asio::ip::udp::resolver::iterator;
-  for (iterator i = resolver.resolve(domain, port); i != iterator{}; ++i) {
-    result.push_back(i->endpoint());
-  }
-
-  return result;
+  return resolver.resolve(domain, port);
 }
-
 template <class T, class InputIt>
 ::std::vector<T> ToVector(InputIt b, InputIt e) {
   return ::std::vector<T>{b, e};
@@ -95,6 +92,20 @@ T FromNetworkCharSequence(::cocktorrent::util::CharSequence<sizeof(T)> bytes) {
   return ::cocktorrent::util::NetworkToHost(value);
 }
 
+template <class T, typename = EnableIfIntegral<T>>
+T FromNetworkCharSequence(::std::string_view bytes) {
+  using namespace std::literals;
+  T value;
+  if (bytes.size() != sizeof(T))
+    throw ::std::logic_error("sizeof(T) {" + std::to_string(sizeof(T)) +
+                             "} must be equals to bytes.size() {" +
+                             std::to_string(bytes.size()) +
+                             "} in "
+                             "FromNetworkCharSequence(std::string_view).");
+  ::std::memcpy(&value, bytes.data(), sizeof(T));
+  return ::cocktorrent::util::NetworkToHost(value);
+}
+
 template <size_t size>
 ::std::array<char, size> StringToCharArray(::std::string_view symbols) {
   if (symbols.size() != size) {
@@ -124,6 +135,39 @@ template <class... T>
 void Put(::boost::asio::streambuf &buf, T &&... els) {
   [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
       (::cocktorrent::util::Put(buf, ::std::forward<T>(els)), 0)...};
+}
+
+namespace detail {
+
+inline void Put(char *buf, ::std::string_view sv) {
+  ::std::memcpy(buf, sv.data(), sv.size());
+}
+
+template <class T, typename = EnableIfIntegral<T>>
+void Put(char *buf, T el) {
+  ::std::memcpy(buf, ::cocktorrent::util::ToNetworkCharSequence(el).chars,
+                sizeof(el));
+}
+
+template <size_t N>
+void Put(char *buf, ::std::array<char, N> ar) {
+  ::std::memcpy(buf, ar.data(), sizeof(ar));
+}
+
+template <class... T>
+void Put(char *buf, T &&... els) {
+  [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
+      (::cocktorrent::util::detail::Put(buf, ::std::forward<T>(els)),
+       buf += sizeof(T), 0)...};
+}
+}  // namespace detail
+
+template <class... T, size_t N>
+void Put([[maybe_unused]] ::std::array<char, N> &buf,
+         [[maybe_unused]] T &&... els) {
+  constexpr size_t all_size = (sizeof(T) + ...);
+  static_assert(N == all_size, "Array size mismatch.");
+  ::cocktorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
 }
 
 }  // namespace cocktorrent::util
