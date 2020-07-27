@@ -16,7 +16,7 @@ inline std::string ReadAll(const std::string& path) {
   return expression;
 }
 
-TEST_CASE("UDP", "[udp][torrent][resolver]") {
+TEST_CASE("UDP", "[torrent][udp][resolver]") {
   auto dir =
       std::filesystem::directory_iterator(STRINGIFY(TEST_TORRENT_FILES_PATH));
   boost::asio::io_service io_service;

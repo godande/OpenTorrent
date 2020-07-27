@@ -10,17 +10,19 @@
 namespace cocktorrent::udp {
 class ConnectPacket {
  public:
+  using BufferType = std::array<char, 16>;
+
   ConnectPacket();
   static int64_t connectionID();
   static int32_t actionID();
   [[nodiscard]] int32_t transactionID() const;
-  [[nodiscard]] const boost::asio::streambuf& buffer() const;
+  [[nodiscard]] const BufferType& buffer() const;
 
  private:
   static constexpr int64_t connectionID_ = 0x41727101980;
   static constexpr int32_t actionID_ = 0;
   int32_t transactionID_;
-  boost::asio::streambuf buffer_;
+  BufferType buffer_;
 };
 }  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_CONNECTPACKET_H

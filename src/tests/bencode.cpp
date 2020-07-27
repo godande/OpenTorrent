@@ -15,7 +15,7 @@ inline std::string ReadAll(const std::string& path) {
   return expression;
 }
 
-TEST_CASE("Bencode", "[bencode]") {
+TEST_CASE("Bencode", "[torrent][bencode]") {
   auto dir =
       std::filesystem::directory_iterator(STRINGIFY(TEST_TORRENT_FILES_PATH));
   std::for_each(std::filesystem::begin(dir), std::filesystem::end(dir),

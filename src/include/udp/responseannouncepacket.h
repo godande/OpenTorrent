@@ -13,8 +13,8 @@ namespace cocktorrent::udp {
 class ResponseAnnouncePacket {
  public:
   ResponseAnnouncePacket() = delete;
-  explicit ResponseAnnouncePacket(boost::asio::streambuf& buffer,
-                                  int32_t transactionID);
+  ResponseAnnouncePacket(const boost::asio::const_buffer& buffer,
+                         int32_t transactionID);
   struct Seed {
     uint32_t ip;
     uint16_t port;
