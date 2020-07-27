@@ -1,3 +1,4 @@
+#include <torrentsinglefileinfo.h>
 #include <udp/trackerconnection.h>
 #include <boost/asio.hpp>
 #include <ios>
@@ -26,25 +27,28 @@ TEST_CASE("Get peers", "[torrent][tracker]") {
   boost::asio::ip::udp::socket socket_{io_service};
   auto endpoints = util::GetUDPEndPoints(s_file_s_info.announce(), io_service);
   auto an_list_it = s_file_s_info.announce_list().begin();
-  while (endpoints.empty() &&
-         an_list_it != s_file_s_info.announce_list().end()) {
+  std::size_t peer_size{};
+  while (an_list_it + 1 != s_file_s_info.announce_list().end()) {
     if (util::IsUdp(*an_list_it))
       endpoints = util::GetUDPEndPoints(*an_list_it, io_service);
     ++an_list_it;
+
+    if (!endpoints.empty()) {
+      TrackerConnection::DeadLineTimer deadline{io_service};
+      deadline.expires_from_now(boost::asio::chrono::seconds(5));
+      TrackerConnection tracker_connection{io_service,
+                                           s_file_s_info.info_hash()};
+      deadline.async_wait(
+          [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
+            Logger::get_instance()->Error(ec.message());
+            io_service.stop();
+            peer_size += tracker_connection.peers().size();
+          });
+      tracker_connection.Run(endpoints);
+
+      io_service.run();
+    }
   }
-  std::intmax_t peer_size{};
-
-  TrackerConnection::DeadLineTimer deadline{io_service};
-  deadline.expires_from_now(boost::asio::chrono::seconds(1));
-  TrackerConnection tracker_connection{io_service, s_file_s_info.info_hash()};
-  deadline.async_wait(
-      [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
-        io_service.stop();
-        peer_size = tracker_connection.peers().size();
-      });
-  tracker_connection.Run(endpoints);
-
-  io_service.run();
 
   REQUIRE(peer_size > 0);
 }

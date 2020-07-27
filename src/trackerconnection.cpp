@@ -2,6 +2,8 @@
 // Created by Linux Oid on 26.07.2020.
 //
 #include <udp/trackerconnection.h>
+#include <logger.h>
+#include <utilities.h>
 
 void cocktorrent::udp::TrackerConnection::ConnHandle(
     const cocktorrent::udp::TrackerConnection::ErrorCode& error_code,
@@ -44,7 +46,7 @@ void cocktorrent::udp::TrackerConnection::ConnIDExpireHandle([
 
 void cocktorrent::udp::TrackerConnection::Connect() {
   if (iterator_ != end_points_.end()) {
-    stoped_ = false;
+    stopped_ = false;
     Logger::get_instance()->Info("Trying " + iterator_->host_name() + ":" +
                                  iterator_->service_name() + "...");
     boost::asio::async_connect(
@@ -234,7 +236,8 @@ void cocktorrent::udp::TrackerConnection::Stop() {
   connection_id_timer_.cancel();
   timer_.expires_at(DeadLineTimer::time_point::max());
   connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
-  stoped_ = true;
+  stopped_ = true;
+  Logger::get_instance()->Info("Tracker connection stopped.");
 }
 
 void cocktorrent::udp::TrackerConnection::Run(

@@ -5,12 +5,10 @@
 #ifndef COCKTORRENT_TRACKERCONNECTION_H
 #define COCKTORRENT_TRACKERCONNECTION_H
 
-#include <logger.h>
 #include <udp/announcepacket.h>
 #include <udp/connectpacket.h>
 #include <udp/responseannouncepacket.h>
 #include <udp/responseconnectpacket.h>
-#include <utilities.h>
 
 #include <array>
 #include <boost/asio.hpp>
@@ -45,7 +43,7 @@ class TrackerConnection {
 
   void Stop();
 
-  [[nodiscard]] bool stoped() const { return stoped_; }
+  [[nodiscard]] bool stopped() const { return stopped_; }
 
   [[nodiscard]] Peers peers() const { return peers_; }
 
@@ -83,14 +81,14 @@ class TrackerConnection {
 
   void TryNext();
 
-  static constexpr TimeOut biggest_timeout_ = TimeOut{16};
+  static constexpr TimeOut biggest_timeout_ = TimeOut{3840};
   ConnectBuffer receive_conn_buf_{};
   std::vector<char> receive_ann_buf_;
   TimeOut time_out_{TimeOut{15}};
   ConnectPacket::BufferType send_conn_buf_{};
   AnnouncePacket::BufferType send_ann_buf_{};
   Peers peers_{};
-  bool stoped_{false};
+  bool stopped_{false};
   EndPoints::iterator iterator_;
   EndPoints end_points_;
   Socket socket_;
