@@ -10,7 +10,7 @@ namespace cocktorrent::udp {
 ConnectPacket::ConnectPacket() {
   std::uniform_int_distribution<uint32_t> distribution;
   transactionID_ = distribution(util::generator);
-  util::Put(buffer_.data(), connectionID_, actionID_, transactionID_);
+  util::Put(buffer_, connectionID_, actionID_, transactionID_);
 }
 int64_t ConnectPacket::connectionID() { return connectionID_; }
 int32_t ConnectPacket::actionID() { return actionID_; }

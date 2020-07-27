@@ -13,7 +13,7 @@ class AnnouncePacket {
  public:
   static constexpr int32_t action_ = 1;
 
-  using BufferType = std::array<char, 96>;
+  using BufferType = std::array<char, 100>;
 
   AnnouncePacket(int64_t connectionId, std::array<char, 20> infoHash,
                  std::array<char, 20> peerId, int64_t downloaded, int64_t left,

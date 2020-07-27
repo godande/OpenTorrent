@@ -11,7 +11,7 @@ Logger *Logger::get_instance() {
 
 void Logger::Write(const std::string &msg_type, const std::string &msg) {
   file << msg_type << "\t" << util::CurrentDate() << "\t"
-       << " " << msg << "\n";
+       << " " << msg << "\n" << std::flush;
 }
 
 void Logger::Debug(const std::string &msg) { Write("[DEBUG]", msg); }

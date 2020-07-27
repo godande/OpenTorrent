@@ -36,7 +36,10 @@ class TrackerConnection {
         socket_{io_context},
         timer_{io_context},
         connection_id_timer_{io_context},
-        info_hash_{info_hash} {}
+        info_hash_{info_hash} {
+    connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
+    timer_.expires_at(DeadLineTimer::time_point::max());
+  }
 
   void Run(const EndPoints &end_points);
 
@@ -80,7 +83,7 @@ class TrackerConnection {
 
   void TryNext();
 
-  static constexpr TimeOut biggest_timeout_ = TimeOut{3840};
+  static constexpr TimeOut biggest_timeout_ = TimeOut{16};
   ConnectBuffer receive_conn_buf_{};
   std::vector<char> receive_ann_buf_;
   TimeOut time_out_{TimeOut{15}};

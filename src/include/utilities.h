@@ -10,12 +10,12 @@
 #include <cstring>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <random>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <vector>
-#include <iostream>
 
 namespace cocktorrent::util {
 inline ::std::mt19937 generator{::std::random_device{}()};
@@ -94,11 +94,14 @@ T FromNetworkCharSequence(::cocktorrent::util::CharSequence<sizeof(T)> bytes) {
 
 template <class T, typename = EnableIfIntegral<T>>
 T FromNetworkCharSequence(::std::string_view bytes) {
+  using namespace std::literals;
   T value;
-  if (bytes.size() == sizeof(T))
-    throw ::std::logic_error(
-        "sizeof(T) must be equals to bytes.size() in "
-        "FromNetworkCharSequence(std::string_view).");
+  if (bytes.size() != sizeof(T))
+    throw ::std::logic_error("sizeof(T) {" + std::to_string(sizeof(T)) +
+                             "} must be equals to bytes.size() {" +
+                             std::to_string(bytes.size()) +
+                             "} in "
+                             "FromNetworkCharSequence(std::string_view).");
   ::std::memcpy(&value, bytes.data(), sizeof(T));
   return ::cocktorrent::util::NetworkToHost(value);
 }
@@ -134,6 +137,8 @@ void Put(::boost::asio::streambuf &buf, T &&... els) {
       (::cocktorrent::util::Put(buf, ::std::forward<T>(els)), 0)...};
 }
 
+namespace detail {
+
 inline void Put(char *buf, ::std::string_view sv) {
   ::std::memcpy(buf, sv.data(), sv.size());
 }
@@ -150,18 +155,19 @@ void Put(char *buf, ::std::array<char, N> ar) {
 }
 
 template <class... T>
-void Put(const char *buf, T &&... els) {
+void Put(char *buf, T &&... els) {
   [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
-      (::cocktorrent::util::Put(buf += sizeof(T), ::std::forward<T>(els)),
-       0)...};
+      (::cocktorrent::util::detail::Put(buf, ::std::forward<T>(els)),
+       buf += sizeof(T), 0)...};
 }
+}  // namespace detail
 
 template <class... T, size_t N>
-void Put(const ::std::array<char, N> &buf, T &&... els) {
+void Put([[maybe_unused]] ::std::array<char, N> &buf,
+         [[maybe_unused]] T &&... els) {
   constexpr size_t all_size = (sizeof(T) + ...);
-  std::cout << all_size;
-//  static_assert(N == all_size, "Array size mismatch.");
-  ::cocktorrent::util::Put(buf.data(), std::forward<T>(els)...);
+  static_assert(N == all_size, "Array size mismatch.");
+  ::cocktorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
 }
 
 }  // namespace cocktorrent::util

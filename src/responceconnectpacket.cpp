@@ -28,12 +28,21 @@ ResponseConnectPacket::ResponseConnectPacket(
       util::FromNetworkCharSequence<int64_t>(data.substr(0, 8));
 
   if (transactionID_ != transactionID) {
-    Logger::get_instance()->Error("TransactionID mismatch");
-    throw std::logic_error{"TransactionID mismatch"};
+    Logger::get_instance()->Error(
+        "ResponseConnectPacket: TransactionID mismatch " +
+        std::to_string(transactionID) + " vs " +
+        std::to_string(transactionID_));
+    throw std::logic_error{"ResponseConnectPacket: TransactionID mismatch " +
+                           std::to_string(transactionID) + " vs " +
+                           std::to_string(transactionID_)};
   }
   if (action_ != 0) {
-    Logger::get_instance()->Error("Action mismatch");
-    throw std::logic_error{"Action mismatch"};
+    Logger::get_instance()->Error("ResponseConnectPacket: Action mismatch" +
+                                  std::to_string(0) + " vs " +
+                                  std::to_string(action_));
+    throw std::logic_error{"ResponseConnectPacket: Action mismatch" +
+                           std::to_string(0) + " vs " +
+                           std::to_string(action_)};
   }
 }
 }  // namespace cocktorrent::udp

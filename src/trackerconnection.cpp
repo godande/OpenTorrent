@@ -9,8 +9,7 @@ void cocktorrent::udp::TrackerConnection::ConnHandle(
   if (!socket_.is_open()) {
     Logger::get_instance()->Info("Connection request to " +
                                  endpoint.address().to_string() + " expired.");
-    ++iterator_;
-    Connect();
+    TryNext();
   } else if (error_code) {
     Logger::get_instance()->Error("Error in connection to " +
                                   endpoint.address().to_string());
@@ -20,9 +19,9 @@ void cocktorrent::udp::TrackerConnection::ConnHandle(
       Logger::get_instance()->Error("Error in closing socket. " + ec.message());
       return;
     }
-    ++iterator_;
-    Connect();
+    TryNext();
   } else {
+    Logger::get_instance()->Info("Socket is connected.");
     SendConnection();
   }
 }
@@ -30,21 +29,24 @@ void cocktorrent::udp::TrackerConnection::ConnHandle(
 void cocktorrent::udp::TrackerConnection::ConnIDExpireHandle([
     [maybe_unused]] const cocktorrent::udp::TrackerConnection::ErrorCode&
                                                                  error_code) {
-  ErrorCode ec;
-  socket_.cancel(ec);
-  if (ec) {
+  ErrorCode ec{};
+  if (socket_.is_open()) socket_.cancel(ec);
+  if (ec || error_code) {
     Logger::get_instance()->Error("Error in resending ConnectionPacket. " +
                                   ec.message());
+  } else {
+    Logger::get_instance()->Info("Connection ID expired.");
+    socket_.cancel();
+    connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
+    SendConnection();
   }
-  connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
-  SendConnection();
 }
 
 void cocktorrent::udp::TrackerConnection::Connect() {
   if (iterator_ != end_points_.end()) {
     stoped_ = false;
-    Logger::get_instance()->Info(
-        "Trying " + iterator_->endpoint().address().to_string() + "...");
+    Logger::get_instance()->Info("Trying " + iterator_->host_name() + ":" +
+                                 iterator_->service_name() + "...");
     boost::asio::async_connect(
         socket_, iterator_,
         [this](const ErrorCode& ec, const EndPoints::iterator& endpoint) {
@@ -52,38 +54,49 @@ void cocktorrent::udp::TrackerConnection::Connect() {
         });
   }
 }
+
 void cocktorrent::udp::TrackerConnection::TryNext() {
   Stop();
   time_out_ = TimeOut{15};
-  ++iterator_;
+  if (iterator_ != end_points_.end()) {
+    ++iterator_;
+    Logger::get_instance()->Info("Next tracker.");
+  }
   Connect();
 }
+
 void cocktorrent::udp::TrackerConnection::ConnRequestTimeOut(
     const cocktorrent::udp::TrackerConnection::ErrorCode& ec) {
   if (ec) {
-    Logger::get_instance()->Error("Connect request timeout.");
-  }
-  time_out_ *= 2;
-  if (time_out_ >= biggest_timeout_) {
-    TryNext();
+    Logger::get_instance()->Error("Error in Connect request timeout. " +
+                                  ec.message());
   } else {
-    SendConnection();
+    Logger::get_instance()->Info("Connect request timeout.");
+    time_out_ *= 2;
+    if (time_out_ >= biggest_timeout_) {
+      TryNext();
+    } else {
+      SendConnection();
+    }
   }
 }
+
 void cocktorrent::udp::TrackerConnection::ConnPackHandle(
     int32_t transaction_id,
     const cocktorrent::udp::TrackerConnection::ErrorCode& error,
     std::size_t bytes_transferred) {
-  if (error) {
+  if (error || bytes_transferred < 16) {
     Logger::get_instance()->Error("Error in sending ConnectionPacket. " +
                                   std::to_string(bytes_transferred) +
                                   " bytes transferred.");
     SendConnection();
+  } else {
+    ReceiveConnection(transaction_id);
   }
-  ReceiveConnection(transaction_id);
 }
 
 void cocktorrent::udp::TrackerConnection::SendConnection() {
+  Logger::get_instance()->Info("Start sending connection request...");
   timer_.cancel();
   timer_.expires_after(time_out_);
   ConnectPacket send_packet{};
@@ -95,8 +108,6 @@ void cocktorrent::udp::TrackerConnection::SendConnection() {
                        this->ConnPackHandle(transaction_id, error,
                                             bytes_transferred);
                      });
-  connection_id_timer_.async_wait(
-      [this](const ErrorCode& ec) { this->ConnIDExpireHandle(ec); });
   timer_.async_wait(
       [this](const ErrorCode& ec) { this->ConnRequestTimeOut(ec); });
 }
@@ -104,13 +115,16 @@ void cocktorrent::udp::TrackerConnection::SendConnection() {
 void cocktorrent::udp::TrackerConnection::AnnRequestTimeOut(
     int64_t conn_id, const cocktorrent::udp::TrackerConnection::ErrorCode& ec) {
   if (ec) {
-    Logger::get_instance()->Error("Connect request timeout.");
-  }
-  time_out_ *= 2;
-  if (time_out_ >= biggest_timeout_) {
-    TryNext();
+    Logger::get_instance()->Error("Error in Announce request timeout. " +
+                                  ec.message());
   } else {
-    SendAnnounce(conn_id);
+    Logger::get_instance()->Info("Announce request timeout.");
+    time_out_ *= 2;
+    if (time_out_ >= biggest_timeout_) {
+      TryNext();
+    } else {
+      SendAnnounce(conn_id);
+    }
   }
 }
 
@@ -128,39 +142,45 @@ void cocktorrent::udp::TrackerConnection::ReceiveConnHandle(
     int32_t transaction_id,
     const cocktorrent::udp::TrackerConnection::ErrorCode& error,
     std::size_t bytes_transferred) {
-  if (error) {
-    Logger::get_instance()->Error("Error in sending ConnectionPacket. " +
+  if (error || bytes_transferred < 16) {
+    Logger::get_instance()->Error("Error in receiving ConnectionPacket. " +
                                   std::to_string(bytes_transferred) +
                                   " bytes transferred.");
-    SendConnection();
+  } else {
+    Logger::get_instance()->Info("Connection request received.");
+    connection_id_timer_.expires_after(TimeOut{60});
+    connection_id_timer_.async_wait(
+        [this](const ErrorCode& ec) { this->ConnIDExpireHandle(ec); });
+    ResponseConnectPacket income{boost::asio::buffer(receive_conn_buf_),
+                                 transaction_id};
+    SendAnnounce(income.connectionID());
   }
-  connection_id_timer_.expires_after(TimeOut{60});
-  ResponseConnectPacket income{boost::asio::buffer(receive_conn_buf_),
-                               transaction_id};
-  SendAnnounce(income.connectionID());
 }
 
 void cocktorrent::udp::TrackerConnection::ReceiveAnnHandle(
     int32_t transaction_id, const boost::system::error_code& error,
     std::size_t bytes_transferred) {
-  if (error) {
-    Logger::get_instance()->Error("Error in sending ConnectionPacket. " +
+  if (error || bytes_transferred < 20) {
+    Logger::get_instance()->Error("Error in sending AnnouncePacket. " +
                                   std::to_string(bytes_transferred) +
                                   " bytes transferred.");
-    SendConnection();
+    SendAnnounce(transaction_id);
+  } else {
+    Logger::get_instance()->Info("Announce response received.");
+    connection_id_timer_.expires_after(TimeOut{60});
+    ResponseAnnouncePacket income{boost::asio::buffer(receive_ann_buf_),
+                                  transaction_id};
+    if (!income.peers().empty()) {
+      auto&& p = income.peers();
+      std::copy(std::begin(p), std::end(p), std::back_inserter(peers_));
+    }
+    TryNext();
   }
-  connection_id_timer_.expires_after(TimeOut{60});
-  ResponseAnnouncePacket income{boost::asio::buffer(receive_ann_buf_),
-                                transaction_id};
-  if (!income.peers().empty()) {
-    auto&& p = income.peers();
-    std::copy(std::begin(p), std::end(p), std::back_inserter(peers_));
-  }
-  TryNext();
 }
 
 void cocktorrent::udp::TrackerConnection::ReceiveAnnounce(
     int32_t transaction_id) {
+  Logger::get_instance()->Info("Receiving announce response.");
   socket_.async_receive(
       boost::asio::buffer(receive_ann_buf_),
       [this, transaction_id](const boost::system::error_code& error,
@@ -178,11 +198,14 @@ void cocktorrent::udp::TrackerConnection::SendAnnHandler(
                                   std::to_string(bytes_transferred) +
                                   " bytes transferred.");
     SendAnnounce(conn_id);
+  } else {
+    Logger::get_instance()->Info("Announce request sent.");
+    ReceiveAnnounce(trans_id);
   }
-  ReceiveAnnounce(trans_id);
 }
 
 void cocktorrent::udp::TrackerConnection::SendAnnounce(int64_t conn_id) {
+  Logger::get_instance()->Info("Start sending announce...");
   timer_.cancel();
   timer_.expires_after(time_out_);
   std::array<char, 20> generated{};
@@ -209,6 +232,8 @@ void cocktorrent::udp::TrackerConnection::Stop() {
   socket_.close();
   timer_.cancel();
   connection_id_timer_.cancel();
+  timer_.expires_at(DeadLineTimer::time_point::max());
+  connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
   stoped_ = true;
 }
 

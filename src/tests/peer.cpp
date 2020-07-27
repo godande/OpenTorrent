@@ -35,16 +35,12 @@ TEST_CASE("Get peers", "[torrent][tracker]") {
   std::intmax_t peer_size{};
 
   TrackerConnection::DeadLineTimer deadline{io_service};
-  deadline.expires_from_now(boost::asio::chrono::seconds(20));
+  deadline.expires_from_now(boost::asio::chrono::seconds(1));
   TrackerConnection tracker_connection{io_service, s_file_s_info.info_hash()};
   deadline.async_wait(
       [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
         io_service.stop();
-        auto &&p = tracker_connection.peers();
-        peer_size += p.size();
-        std::for_each(std::begin(p), std::end(p), [](auto &&peer) {
-          std::cout << peer.ip << ':' << peer.port << '\n';
-        });
+        peer_size = tracker_connection.peers().size();
       });
   tracker_connection.Run(endpoints);
 

@@ -4,7 +4,7 @@ project(CockTorrent)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Werror -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Werror -Wextra -fsanitize=address")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
@@ -21,9 +21,9 @@ add_executable(${PROJECT_NAME} "src/main_file/main.cpp" ${SOURCES} src/include/u
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 
-set_target_properties(${PROJECT_NAME} 
+set_target_properties(${PROJECT_NAME}
   PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" 
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
@@ -37,6 +37,6 @@ target_link_libraries(tests ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(tests Threads::Threads)
 set_target_properties(tests
   PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib" 
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/bin")
