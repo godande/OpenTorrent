@@ -5,6 +5,7 @@
 #ifndef COCKTORRENT_TRACKERCONNECTION_H
 #define COCKTORRENT_TRACKERCONNECTION_H
 
+#include <torrentbasefileinfo.h>
 #include <udp/announcepacket.h>
 #include <udp/connectpacket.h>
 #include <udp/responseannouncepacket.h>
@@ -29,12 +30,12 @@ class TrackerConnection {
   using InfoHashType = std::array<char, 20>;
   using Peers = std::vector<ResponseAnnouncePacket::Seed>;
 
-  TrackerConnection(IOContext &io_context, const InfoHashType &info_hash)
+  TrackerConnection(IOContext &io_context, TorrentBaseFileInfo file_info)
       : receive_ann_buf_(65535),
         socket_{io_context},
         timer_{io_context},
         connection_id_timer_{io_context},
-        info_hash_{info_hash} {
+        file_info_{std::move(file_info)} {
     connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
     timer_.expires_at(DeadLineTimer::time_point::max());
   }
@@ -71,7 +72,7 @@ class TrackerConnection {
   void ConnPackHandle(int32_t transaction_id, const ErrorCode &error,
                       std::size_t bytes_transferred);
 
-  void ConnHandle(const ErrorCode &error_code, const EndPoint &endpoint);
+  void ConnHandle(const ErrorCode &error_code);
 
   void ConnIDExpireHandle(const ErrorCode &error_code);
 
@@ -81,7 +82,7 @@ class TrackerConnection {
 
   void TryNext();
 
-  static constexpr TimeOut biggest_timeout_ = TimeOut{3840};
+  static constexpr TimeOut biggest_timeout_ = TimeOut{120};
   ConnectBuffer receive_conn_buf_{};
   std::vector<char> receive_ann_buf_;
   TimeOut time_out_{TimeOut{15}};
@@ -94,7 +95,7 @@ class TrackerConnection {
   Socket socket_;
   DeadLineTimer timer_;
   DeadLineTimer connection_id_timer_;
-  InfoHashType info_hash_;
+  TorrentBaseFileInfo file_info_;
 };  // namespace cocktorrent::udp
 }  // namespace cocktorrent::udp
 

@@ -5,6 +5,10 @@
 #include <string>
 
 #define LOG_FILE_PATH "log.txt"
+#define LOG_DEBUG(str) (Logger::get_instance()->Debug(str))
+#define LOG_INFO(str) (Logger::get_instance()->Info(str))
+#define LOG_WARN(str) (Logger::get_instance()->Warning(str))
+#define LOG_ERR(str) (Logger::get_instance()->Error(str))
 
 namespace cocktorrent {
 class Logger {

@@ -25,12 +25,14 @@ class TorrentSingleFileInfo : public TorrentBaseFileInfo {
 
   TorrentSingleFileInfo() = delete;
 
-  explicit TorrentSingleFileInfo(BencodeElement const &el);
+  explicit TorrentSingleFileInfo(BencodeElement const &el)
+      : TorrentBaseFileInfo(el) {
+    TorrentBaseFileInfo::data_size_ = adapt(&el)["info"]["length"].integer();
+  }
 
-  Integer length() const;
-
- private:
-  Integer length_{};
+  [[nodiscard]] Integer length() const {
+    return TorrentBaseFileInfo::data_size_;
+  }
 };
 }  // namespace cocktorrent
 

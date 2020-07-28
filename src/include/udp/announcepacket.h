@@ -4,9 +4,10 @@
 
 #ifndef COCKTORRENT_ANNOUNCEPACKET_H
 #define COCKTORRENT_ANNOUNCEPACKET_H
+
+#include <torrentbasefileinfo.h>
 #include <boost/asio.hpp>
 #include <cinttypes>
-#include "responseconnectpacket.h"
 
 namespace cocktorrent::udp {
 class AnnouncePacket {
@@ -14,20 +15,23 @@ class AnnouncePacket {
   static constexpr int32_t action_ = 1;
 
   using BufferType = std::array<char, 100>;
+  using InfoHashType = TorrentBaseFileInfo::InfoHashType;
+  using PeerIDType = std::array<char, 20>;
 
-  AnnouncePacket(int64_t connectionId, std::array<char, 20> infoHash,
-                 std::array<char, 20> peerId, int64_t downloaded, int64_t left,
-                 int64_t uploaded, int32_t event, uint32_t ipAddress,
-                 uint32_t key, int32_t numWant, uint16_t port,
-                 uint16_t extensions);
+  AnnouncePacket(int64_t connectionId, const TorrentBaseFileInfo &file_info,
+                 uint16_t port);
+
+  AnnouncePacket(int64_t connectionId, const InfoHashType &infoHash,
+                 int64_t downloaded, int64_t left, int64_t uploaded,
+                 int32_t event, uint16_t port);
 
   [[nodiscard]] int64_t connectionID() const;
 
   [[nodiscard]] int32_t transactionID() const;
 
-  [[nodiscard]] const std::array<char, 20> &infoHash() const;
+  [[nodiscard]] const InfoHashType &info_hash() const;
 
-  [[nodiscard]] const std::array<char, 20> &peerID() const;
+  [[nodiscard]] const PeerIDType &peerID() const;
 
   [[nodiscard]] int64_t downloaded() const;
 
@@ -37,11 +41,11 @@ class AnnouncePacket {
 
   [[nodiscard]] int32_t event() const;
 
-  [[nodiscard]] uint32_t ipAddress() const;
+  [[nodiscard]] uint32_t ip_address() const;
 
   [[nodiscard]] uint32_t key() const;
 
-  [[nodiscard]] int32_t numWant() const;
+  [[nodiscard]] int32_t num_want() const;
 
   [[nodiscard]] uint16_t port() const;
 
@@ -52,15 +56,15 @@ class AnnouncePacket {
  private:
   int64_t connectionID_;
   int32_t transactionID_;
-  std::array<char, 20> infoHash_;
-  std::array<char, 20> peerID_;
+  InfoHashType info_hash_;
+  PeerIDType peerID_;
   int64_t downloaded_;
   int64_t left_;
   int64_t uploaded_;
   int32_t event_;
-  uint32_t ipAddress_;
+  uint32_t ip_address_;
   uint32_t key_;
-  int32_t numWant_;
+  int32_t num_want_;
   uint16_t port_;
   uint16_t extensions_;
   BufferType buffer_{};

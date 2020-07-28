@@ -32,7 +32,8 @@ inline auto CurrentDate() {
 inline bool IsUdp(::std::string_view url) { return url.find("udp://") == 0; }
 
 inline ::boost::asio::ip::udp::resolver::results_type GetUDPEndPoints(
-    ::std::string_view url, ::boost::asio::io_context &io_context) {
+    ::boost::system::error_code &ec, ::std::string_view url,
+    ::boost::asio::io_context &io_context) {
   std::string_view domain;
   std::string_view port;
   if (IsUdp(url)) {
@@ -49,7 +50,7 @@ inline ::boost::asio::ip::udp::resolver::results_type GetUDPEndPoints(
 
   ::boost::asio::ip::udp::resolver resolver{io_context};
 
-  return resolver.resolve(domain, port);
+  return resolver.resolve(domain, port, ec);
 }
 template <class T, class InputIt>
 ::std::vector<T> ToVector(InputIt b, InputIt e) {

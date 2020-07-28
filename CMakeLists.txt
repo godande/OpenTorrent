@@ -30,11 +30,7 @@ set_target_properties(${PROJECT_NAME}
 
 # Unit testing
 file(GLOB TEST_SOURCES "src/tests/*.cpp")
-<<<<<<< HEAD
-add_executable(tests ${TEST_SOURCES} ${SOURCES} src/peertransfer.cpp)
-=======
-add_executable(tests ${TEST_SOURCES} ${SOURCES} src/trackerconnection.cpp)
->>>>>>> master
+add_executable(tests ${TEST_SOURCES} ${SOURCES})
 target_compile_definitions(tests PUBLIC
   TEST_TORRENT_FILES_PATH=${PROJECT_SOURCE_DIR}/test-torrent-files)
 target_link_libraries(tests ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})

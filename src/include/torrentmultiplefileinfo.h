@@ -27,19 +27,35 @@ class TorrentMultipleFileInfo : public TorrentBaseFileInfo {
   using BencodeAdapter = TorrentBaseFileInfo::BencodeAdapter;
 
   struct File {
-    using List = std::vector<String>;
+    using PathList = std::vector<String>;
 
-    explicit File(BencodeElement const &dict);
+    explicit File(BencodeElement const &dict)
+        : length(adapt(&dict)["length"].integer()),
+          path(PathListFromBencode(adapt(&dict)["path"].list())) {}
 
-    static List ListFromBencode(const BencodeAdapter::ListType &el);
+    static PathList PathListFromBencode(const BencodeAdapter::ListType &el) {
+      TorrentMultipleFileInfo::File::PathList path;
+      path.reserve(el.size());
+      std::for_each(std::cbegin(el), std::cend(el), [&](auto &&el) {
+        path.push_back(adapt(&el).string());
+      });
+      return path;
+    }
 
     Integer length;
-    List path;
+    PathList path;
   };
 
-  explicit TorrentMultipleFileInfo(BencodeElement const &el);
+  explicit TorrentMultipleFileInfo(BencodeElement const &el)
+      : TorrentBaseFileInfo(el),
+        files_{adapt(&el)["info"]["files"].list().cbegin(),
+               adapt(&el)["info"]["files"].list().cend()} {
+    std::for_each(std::cbegin(files_), std::cend(files_), [&](auto &&el) {
+      TorrentBaseFileInfo::data_size_ += el.length;
+    });
+  }
 
-  [[nodiscard]] const List &files() const;
+  [[nodiscard]] const List &files() const { return files_; }
 
  private:
   List files_;

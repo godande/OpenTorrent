@@ -20,14 +20,19 @@ TEST_CASE("UDP", "[torrent][udp][resolver]") {
   auto dir =
       std::filesystem::directory_iterator(STRINGIFY(TEST_TORRENT_FILES_PATH));
   boost::asio::io_service io_service;
+  boost::system::error_code ec;
   std::for_each(
       std::filesystem::begin(dir), std::filesystem::end(dir), [&](auto&& file) {
         auto bencode_str = ReadAll(file.path());
         auto decoded = cocktorrent::bencode::Decode(bencode_str);
         cocktorrent::TorrentBaseFileInfo file_info{decoded};
         if (file_info.announce().find("udp://") == 0) {
-          auto vec = cocktorrent::util::GetUDPEndPoints(file_info.announce(),
-                                                        io_service);
+          auto vec = cocktorrent::util::GetUDPEndPoints(
+              ec, file_info.announce(), io_service);
+          if (ec) {
+            WARN("Error in getting udp points to " + file_info.announce() +
+                 " " + ec.message());
+          }
           INFO(file_info.announce());
           REQUIRE(!vec.empty());
         }
@@ -35,7 +40,11 @@ TEST_CASE("UDP", "[torrent][udp][resolver]") {
         std::for_each(ann_list.begin(), ann_list.end(), [&](auto&& el) {
           if (std::forward<decltype(el)>(el).find("udp://") == 0) {
             auto vec = cocktorrent::util::GetUDPEndPoints(
-                std::forward<decltype(el)>(el), io_service);
+                ec, std::forward<decltype(el)>(el), io_service);
+            if (ec) {
+              WARN("Error in getting udp points to " +
+                   std::forward<decltype(el)>(el) + " " + ec.message());
+            }
             INFO(std::forward<decltype(el)>(el));
             REQUIRE(!vec.empty());
           }

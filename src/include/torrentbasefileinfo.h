@@ -5,9 +5,10 @@
 #ifndef COCKTORRENT_TORRENTBASEFILEINFO_H
 #define COCKTORRENT_TORRENTBASEFILEINFO_H
 
+#include <type_traits>
+#include <vector>
 #include "bencode.h"
 #include "bencodeelementadapter.h"
-#include <vector>
 
 namespace cocktorrent {
 /**
@@ -25,33 +26,45 @@ class TorrentBaseFileInfo {
   using AnnounceList = std::vector<std::string>;
   using InfoHashType = std::array<char, 20>;
 
+  enum class DownloadState {
+    NONE = 0,
+    COMPLETED = 1,
+    STARTED = 2,
+    STOPPED = 2
+  };
+
+  [[nodiscard]] static Integer ToInteger(const DownloadState &d_state) {
+    return static_cast<std::underlying_type_t<DownloadState>>(d_state);
+  };
+
   TorrentBaseFileInfo() = delete;
 
   explicit TorrentBaseFileInfo(BencodeElement const &el);
 
-  [[nodiscard]] const String &announce() const {
-    return announce_;
-  }
+  [[nodiscard]] const String &announce() const { return announce_; }
 
   [[nodiscard]] const AnnounceList &announce_list() const {
     return announce_list_;
   }
 
-  [[nodiscard]] const String &pieces() const {
-    return pieces_;
-  }
+  [[nodiscard]] const String &pieces() const { return pieces_; }
 
-  [[nodiscard]] const String &name() const {
-    return name_;
-  }
+  [[nodiscard]] const String &name() const { return name_; }
 
-  [[nodiscard]] const InfoHashType &info_hash() const {
-    return info_hash_;
-  }
+  [[nodiscard]] const InfoHashType &info_hash() const { return info_hash_; }
 
-  [[nodiscard]] Integer piece_length() const {
-    return piece_length_;
-  }
+  [[nodiscard]] Integer piece_length() const { return piece_length_; }
+
+  [[nodiscard]] Integer uploaded() const { return 0; }
+
+  [[nodiscard]] Integer downloaded() const { return 0; }
+
+  [[nodiscard]] Integer left() const { return data_size_; }
+
+  [[nodiscard]] DownloadState state() const { return DownloadState::NONE; }
+
+ protected:
+  Integer data_size_{};
 
  private:
   String announce_{};
@@ -60,7 +73,7 @@ class TorrentBaseFileInfo {
   String name_{};
   InfoHashType info_hash_{};
   Integer piece_length_{};
-};
+};  // namespace cocktorrent
 }  // namespace cocktorrent
 
 #endif  // COCKTORRENT_TORRENTBASEFILEINFO_H
