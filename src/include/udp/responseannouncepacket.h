@@ -15,7 +15,7 @@ class ResponseAnnouncePacket {
   ResponseAnnouncePacket() = delete;
   ResponseAnnouncePacket(const boost::asio::const_buffer& buffer,
                          int32_t transactionID);
-  struct Seed {
+  struct Peer {
     uint32_t ip;
     uint16_t port;
   };
@@ -30,7 +30,7 @@ class ResponseAnnouncePacket {
 
   [[nodiscard]] int32_t seeders() const;
 
-  [[nodiscard]] const std::vector<Seed>& peers() const;
+  [[nodiscard]] const std::vector<Peer>& peers() const;
 
  private:
   int32_t action_{};
@@ -38,7 +38,7 @@ class ResponseAnnouncePacket {
   int32_t interval_{};
   int32_t leechers_{};
   int32_t seeders_{};
-  std::vector<Seed> peers_;
+  std::vector<Peer> peers_;
 };
 }  // namespace cocktorrent::udp
 #endif  // COCKTORRENT_RESPONSEANNOUNCEPACKET_H

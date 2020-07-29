@@ -28,7 +28,8 @@ class TrackerConnection {
   using ErrorCode = boost::system::error_code;
   using ConnectBuffer = std::array<char, 16>;
   using InfoHashType = std::array<char, 20>;
-  using Peers = std::vector<ResponseAnnouncePacket::Seed>;
+  using Peer = ResponseAnnouncePacket::Peer;
+  using Peers = std::vector<Peer>;
 
   TrackerConnection(IOContext &io_context, TorrentBaseFileInfo file_info)
       : receive_ann_buf_(65535),

@@ -4,6 +4,7 @@
 
 #ifndef COCKTORRENT_PEERHANDSHAKE_H
 #define COCKTORRENT_PEERHANDSHAKE_H
+#include <utilities.h>
 #include <boost/asio.hpp>
 #include <string_view>
 
@@ -11,22 +12,32 @@ namespace cocktorrent::peer::tcp {
 class PeerHandshake {
  public:
   static constexpr std::string_view protocol_id = "BitTorrent protocol";
-  static constexpr char pstrlen = 19;
+  static constexpr char pstrlen = protocol_id.size();
   static constexpr int64_t reserved = 0;
 
-  PeerHandshake() = delete;
-  explicit PeerHandshake(const std::array<char, 20> &info_hash);
+  using BufferType = std::array<char, 49 + protocol_id.size()>;
+  using InfoHashType = std::array<char, 20>;
+  using PeerIdType = std::array<char, 20>;
 
-  [[nodiscard]] const boost::asio::streambuf &buffer() const { return buffer_; }
-  [[nodiscard]] const std::array<char, 20> &info_hash() const {
-    return info_hash_;
+  PeerHandshake() = delete;
+  explicit PeerHandshake(const InfoHashType &info_hash)
+      : info_hash_{info_hash} {
+    util::Put(buffer_, pstrlen, protocol_id, reserved, info_hash_, peer_id_);
   }
-  [[nodiscard]] const std::array<char, 20> &peer_id() { return peer_id_; }
+
+  explicit PeerHandshake(const BufferType &buf) {
+    util::Get(buf.data() + sizeof(pstrlen) + pstrlen + sizeof(reserved),
+              info_hash_, peer_id_);
+  }
+
+  [[nodiscard]] const BufferType &buffer() const { return buffer_; }
+  [[nodiscard]] const InfoHashType &info_hash() const { return info_hash_; }
+  [[nodiscard]] const PeerIdType &peer_id() { return peer_id_; }
 
  private:
-  std::array<char, 20> info_hash_;
-  std::array<char, 20> peer_id_ = {{"-CK0001-"}};
-  boost::asio::streambuf buffer_;
+  InfoHashType info_hash_;
+  PeerIdType peer_id_ = {{"-CK0001-"}};
+  BufferType buffer_{};
 };
 }  // namespace cocktorrent::peer::tcp
 

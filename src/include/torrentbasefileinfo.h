@@ -30,8 +30,10 @@ class TorrentBaseFileInfo {
     NONE = 0,
     COMPLETED = 1,
     STARTED = 2,
-    STOPPED = 2
+    STOPPED = 3
   };
+
+  enum class LocalState { Leecher = 0, Seeder = 1 };
 
   [[nodiscard]] static Integer ToInteger(const DownloadState &d_state) {
     return static_cast<std::underlying_type_t<DownloadState>>(d_state);
@@ -40,6 +42,17 @@ class TorrentBaseFileInfo {
   TorrentBaseFileInfo() = delete;
 
   explicit TorrentBaseFileInfo(BencodeElement const &el);
+
+  [[nodiscard]] LocalState local_state() const {
+    auto l_state = state();
+    switch (l_state) {
+      case DownloadState::NONE:
+      case DownloadState::STARTED:
+        return LocalState::Leecher;
+      default:
+        return LocalState::Seeder;
+    }
+  }
 
   [[nodiscard]] const String &announce() const { return announce_; }
 

@@ -66,8 +66,14 @@ template <class T, class Cont>
 
 template <size_t Size>
 struct CharSequence {
-  char chars[Size];
+  unsigned char chars[Size];
 };
+
+inline CharSequence<4> FromIPv4(uint32_t ip) {
+  CharSequence<4> ret{};
+  std::memcpy(ret.chars, &ip, 4);
+  return ret;
+}
 
 template <class T, typename = EnableIfIntegral<T>>
 T HostToNetwork(T x) noexcept {
@@ -128,7 +134,8 @@ void Put(::boost::asio::streambuf &buf, T el) {
 }
 
 template <size_t N>
-void Put(::boost::asio::streambuf &buf, ::std::array<char, N> ar) {
+[[maybe_unused]] void Put(::boost::asio::streambuf &buf,
+                          ::std::array<char, N> ar) {
   buf.sputn(ar.data(), sizeof(ar));
 }
 
@@ -138,37 +145,67 @@ void Put(::boost::asio::streambuf &buf, T &&... els) {
       (::cocktorrent::util::Put(buf, ::std::forward<T>(els)), 0)...};
 }
 
-namespace detail {
-
 inline void Put(char *buf, ::std::string_view sv) {
   ::std::memcpy(buf, sv.data(), sv.size());
 }
 
 template <class T, typename = EnableIfIntegral<T>>
-void Put(char *buf, T el) {
+void Put(char *buf, T &el) {
   ::std::memcpy(buf, ::cocktorrent::util::ToNetworkCharSequence(el).chars,
                 sizeof(el));
 }
 
 template <size_t N>
-void Put(char *buf, ::std::array<char, N> ar) {
+void Put(char *buf, ::std::array<char, N> &ar) {
   ::std::memcpy(buf, ar.data(), sizeof(ar));
 }
 
 template <class... T>
 void Put(char *buf, T &&... els) {
   [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
-      (::cocktorrent::util::detail::Put(buf, ::std::forward<T>(els)),
+      (::cocktorrent::util::Put(buf, ::std::forward<T>(els)),
        buf += sizeof(T), 0)...};
 }
-}  // namespace detail
+
+inline void Get(const char *buf, std::size_t n, ::std::string_view &sv) {
+  sv = std::string_view{buf, n};
+}
+
+template <class T, typename = EnableIfIntegral<T>>
+void Get(const char *buf, T &el) {
+  ::std::memcpy(&el, buf, sizeof(el));
+}
+
+template <size_t N>
+void Get(const char *buf, ::std::array<char, N> &ar) {
+  ::std::memcpy(ar.data(), buf, sizeof(ar));
+}
+
+template <class... T>
+void Get(const char *buf, T &... els) {
+  [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
+      (::cocktorrent::util::Get(buf, els), buf += sizeof(T), 0)...};
+}
+
+template <class T>
+constexpr std::size_t Size(T &&) {
+  return sizeof(T);
+}
+
+constexpr std::size_t Size(std::string_view sv) { return sv.size(); }
 
 template <class... T, size_t N>
-void Put([[maybe_unused]] ::std::array<char, N> &buf,
-         [[maybe_unused]] T &&... els) {
-  constexpr size_t all_size = (sizeof(T) + ...);
-  static_assert(N == all_size, "Array size mismatch.");
-  ::cocktorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
+void Put(::std::array<char, N> &buf, T &&... els) {
+  size_t all_size = (Size(els) + ...);
+  if (N < all_size) throw std::logic_error{"Array size mismatch."};
+  ::cocktorrent::util::Put(buf.data(), std::forward<T>(els)...);
+}
+
+template <class... T, size_t N>
+void Get(const ::std::array<char, N> &buf, T &... els) {
+  size_t all_size = (Size(els) + ...);
+  if (N < all_size) throw std::logic_error{"Array size mismatch."};
+  ::cocktorrent::util::Get(buf.data(), std::forward<T>(els)...);
 }
 
 }  // namespace cocktorrent::util

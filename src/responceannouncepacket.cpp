@@ -38,7 +38,7 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(
 
   while (buff_view.size() >= 6) {
     auto to_return =
-        Seed{util::FromNetworkCharSequence<uint32_t>(buff_view.substr(0, 4)),
+        Peer{util::FromNetworkCharSequence<uint32_t>(buff_view.substr(0, 4)),
              util::FromNetworkCharSequence<uint16_t>(buff_view.substr(4, 2))};
     buff_view.remove_prefix(6);
     if (to_return.port || to_return.ip) {
@@ -57,7 +57,7 @@ int32_t ResponseAnnouncePacket::leechers() const { return leechers_; }
 
 int32_t ResponseAnnouncePacket::seeders() const { return seeders_; }
 
-const std::vector<ResponseAnnouncePacket::Seed>& ResponseAnnouncePacket::peers()
+const std::vector<ResponseAnnouncePacket::Peer>& ResponseAnnouncePacket::peers()
     const {
   return peers_;
 }

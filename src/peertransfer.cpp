@@ -3,3 +3,63 @@
 //
 
 #include <peertransfer.h>
+#include <utilities.h>
+
+#include <logger.h>
+#include <string>
+#include <utility>
+
+cocktorrent::peer::tcp::PeerTransfer::PeerTransfer(
+    PeerTransfer::IOContext &io_context, TorrentBaseFileInfo file_info)
+    : file_info_{std::move(file_info)}, io_context_{io_context}, peers_{} {}
+
+cocktorrent::peer::tcp::PeerTransfer::EndPoint
+cocktorrent::peer::tcp::PeerTransfer::FromRespAnnPeer(
+    udp::ResponseAnnouncePacket::Peer peer) {
+  auto char_seq = util::FromIPv4(peer.ip);
+  std::string ip_string;
+  ip_string.reserve(15);
+  for (auto ch : char_seq.chars) {
+    ip_string += std::to_string(static_cast<int>(ch));
+    ip_string += '.';
+  }
+  ip_string.erase(ip_string.cend() - 1);
+  auto ip_address = boost::asio::ip::make_address(ip_string);
+  return EndPoint{ip_address, peer.port};
+}
+
+void cocktorrent::peer::tcp::PeerTransfer::AsyncConnectHandle(
+    const cocktorrent::peer::tcp::PeerTransfer::ErrorCode &ec, int peer_id,
+    cocktorrent::peer::tcp::Peer &peer) {
+  if (ec) {
+    LOG_ERR("PeerTransfer: Error in connecting to " +
+            peer.address().to_string());
+    peers_.erase(peer_id);
+  } else {
+    LOG_INFO("PeerTransfer: Peer connected to " + peer.address().to_string());
+    peer.HandShake(
+        [this, &peer] {
+          this->active_peers_.push_back(&peer);
+          if (this->regular_unchoked_size_ == 3) {
+            this->Start();
+          }
+        },
+        file_info_.info_hash());
+  }
+}
+
+void cocktorrent::peer::tcp::PeerTransfer::AsyncConnect(
+    const cocktorrent::peer::tcp::PeerTransfer::EndPoint &end_point) {
+  LOG_INFO("PeerTransfer: Start sending peer to " +
+           end_point.address().to_string());
+  std::uniform_int_distribution<int> distribution{};
+  auto [it, f] = peers_.emplace(
+      std::make_pair(distribution(util::generator), Peer{io_context_}));
+  if (f) {
+    auto it_c = it;
+    it->second.socket().async_connect(
+        end_point, [this, it_c](const ErrorCode &ec) {
+          this->AsyncConnectHandle(ec, it_c->first, it_c->second);
+        });
+  }
+}

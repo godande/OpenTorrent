@@ -5,67 +5,73 @@
 #ifndef COCKTORRENT_PEERTRANSFER_H
 #define COCKTORRENT_PEERTRANSFER_H
 
+#include <logger.h>
+#include <peer.h>
+#include <peerhandshake.h>
+#include <torrentbasefileinfo.h>
 #include <udp/responseannouncepacket.h>
 #include <boost/asio.hpp>
+#include <iterator>
+#include <unordered_map>
 #include <vector>
+#include "utilities.h"
 
 namespace cocktorrent::peer::tcp {
 class PeerTransfer {
  public:
-  enum class PeerState {
-    INTERESTED = 0,
-    CHOCKED = 2,
-  };
-
-  class Peer {
-   public:
-    using UnderlyingType =
-        std::make_unsigned_t<std::underlying_type_t<PeerState>>;
-
-    void SetChoked() {
-      state |= static_cast<UnderlyingType>(PeerState::CHOCKED);
-    }
-
-    void SetInterested() {
-      state |= static_cast<UnderlyingType>(PeerState::INTERESTED);
-    }
-
-    void UnsetChoked() {
-      state &= ~static_cast<UnderlyingType>(PeerState::CHOCKED);
-    }
-
-    void UnsetInterested() {
-      state &= ~static_cast<UnderlyingType>(PeerState::INTERESTED);
-    }
-
-    [[nodiscard]] bool Interested() const {
-      return state & static_cast<UnderlyingType>(PeerState::INTERESTED);
-    }
-
-    [[nodiscard]] bool Choked() const {
-      return state & static_cast<UnderlyingType>(PeerState::CHOCKED);
-    }
-
-    [[nodiscard]] bool Unchoked() const { return !Choked(); }
-
-    [[nodiscard]] bool NotInterested() const { return !Interested(); }
-
-    [[nodiscard]] const auto &seed() const { return seed_; }
-
-   private:
-    udp::ResponseAnnouncePacket::Seed seed_{};
-    unsigned state{};
-  };
-
+  using IOContext = boost::asio::io_context;
   using EndPoint = boost::asio::ip::tcp::endpoint;
   using Socket = boost::asio::ip::tcp::socket;
   using EndPoints = boost::asio::ip::tcp::resolver::results_type;
-  using PeerSet = std::vector<Peer>;
+  using PeerSet = std::unordered_map<int, Peer>;
+  using PeerArray = std::vector<Peer *>;
+  using ErrorCode = boost::system::error_code;
+  template <class It>
+  using EnableIfPeerIt = std::enable_if<std::is_same_v<
+      std::decay_t<typename std::iterator_traits<It>::value_type>,
+      udp::ResponseAnnouncePacket::Peer>>;
+
+  PeerTransfer(IOContext &io_context, TorrentBaseFileInfo file_info);
+
+  template <class PeerIt, typename = EnableIfPeerIt<PeerIt>>
+  void Run(PeerIt b, PeerIt e) {
+    active_peers_.reserve(std::distance(b, e));
+    std::for_each(b, e, [this](auto &&el) {
+      this->AsyncConnect(FromRespAnnPeer(std::forward<decltype(el)>(el)));
+    });
+  }
 
  private:
+  void Start() {
+    LOG_INFO("PeerTransfer: Starting peer selection policy algorithm...");
+  }
+
+  void UnchokeIntervalHandle() {
+    switch (file_info_.local_state()) {
+      case TorrentBaseFileInfo::LocalState::Leecher:
+        std::sort(std::begin(active_peers_), std::end(active_peers_),
+                  [](Peer *lhs, Peer *rhs) {
+                    return lhs->upload_rate() > rhs->upload_rate();
+                  });
+        break;
+      default:
+        break;
+    }
+  }
+
+  void AsyncConnect(const EndPoint &end_point);
+
+  void AsyncConnectHandle(const ErrorCode &ec, int peer_id, Peer &peer);
+
+  static EndPoint FromRespAnnPeer(udp::ResponseAnnouncePacket::Peer peer);
+
+  TorrentBaseFileInfo file_info_;
+  IOContext &io_context_;
+  int regular_unchoked_size_{};
   PeerSet peers_;
-  Socket socket_;
-};  // namespace cocktorrent::peer::tcp
+  PeerArray active_peers_;
+};
+// namespace cocktorrent::peer::tcp
 }  // namespace cocktorrent::peer::tcp
 
 #endif  // COCKTORRENT_PEERTRANSFER_H
