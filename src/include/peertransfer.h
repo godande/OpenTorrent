@@ -41,6 +41,8 @@ class PeerTransfer {
     });
   }
 
+  [[nodiscard]] const PeerArray &active_peers() { return active_peers_; }
+
  private:
   void Start() {
     LOG_INFO("PeerTransfer: Starting peer selection policy algorithm...");

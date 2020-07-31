@@ -5,6 +5,8 @@
 #include <peerhandshake.h>
 #include <boost/asio.hpp>
 
+#include <utility>
+
 namespace cocktorrent::peer::tcp {
 class Peer {
  public:
@@ -68,8 +70,7 @@ class Peer {
         socket_, boost::asio::buffer(buff_),
         [this, callback = std::forward<F>(f)](
             const ErrorCode &error, std::size_t bytes_transferred) mutable {
-          this->SendHandshakeHandle(std::forward<F>(callback), error,
-                                    bytes_transferred);
+          this->SendHandshakeHandle(callback, error, bytes_transferred);
         });
   }
 
@@ -92,8 +93,7 @@ class Peer {
         socket_, boost::asio::buffer(buff_),
         [this, callback = std::forward<F>(callback)](
             const ErrorCode &error, std::size_t bytes_transferred) {
-          this->ReceiveHandShakeHandle(std::forward<F>(callback), error,
-                                       bytes_transferred);
+          this->ReceiveHandShakeHandle(callback, error, bytes_transferred);
         });
   }
 

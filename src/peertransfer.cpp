@@ -32,8 +32,8 @@ void cocktorrent::peer::tcp::PeerTransfer::AsyncConnectHandle(
     const cocktorrent::peer::tcp::PeerTransfer::ErrorCode &ec, int peer_id,
     cocktorrent::peer::tcp::Peer &peer) {
   if (ec) {
-    LOG_ERR("PeerTransfer: Error in connecting to " +
-            peer.address().to_string());
+    LOG_ERR("PeerTransfer: Error in connecting. peer_id: " +
+            std::to_string(peer_id));
     peers_.erase(peer_id);
   } else {
     LOG_INFO("PeerTransfer: Peer connected to " + peer.address().to_string());
@@ -50,16 +50,19 @@ void cocktorrent::peer::tcp::PeerTransfer::AsyncConnectHandle(
 
 void cocktorrent::peer::tcp::PeerTransfer::AsyncConnect(
     const cocktorrent::peer::tcp::PeerTransfer::EndPoint &end_point) {
-  LOG_INFO("PeerTransfer: Start sending peer to " +
+  LOG_INFO("PeerTransfer: Start connecting peer to " +
            end_point.address().to_string());
   std::uniform_int_distribution<int> distribution{};
   auto [it, f] = peers_.emplace(
       std::make_pair(distribution(util::generator), Peer{io_context_}));
   if (f) {
+    LOG_INFO("PeerTransfer: Peer inserted.");
     auto it_c = it;
     it->second.socket().async_connect(
         end_point, [this, it_c](const ErrorCode &ec) {
           this->AsyncConnectHandle(ec, it_c->first, it_c->second);
         });
+  } else {
+    LOG_ERR("PeerTransfer: Peer not inserted.");
   }
 }

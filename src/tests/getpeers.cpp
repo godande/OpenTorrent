@@ -1,3 +1,4 @@
+#include <peertransfer.h>
 #include <udp/trackerconnection.h>
 #include <boost/asio.hpp>
 #include <ios>
@@ -14,6 +15,7 @@
 TEST_CASE("Get peers", "[torrent][tracker]") {
   using namespace cocktorrent;
   using namespace cocktorrent::udp;
+  using namespace cocktorrent::peer::tcp;
   std::ifstream input_file(STRINGIFY(TEST_TORRENT_FILES_PATH) "/nsfw2.torrent",
                            std::ios::binary | std::ifstream::in);
   std::string expression{std::istreambuf_iterator<char>{input_file},
@@ -44,19 +46,30 @@ TEST_CASE("Get peers", "[torrent][tracker]") {
     ++an_list_it;
   }
 
+  TrackerConnection tracker_connection{io_service, s_file_s_info};
+
+  TrackerConnection::DeadLineTimer deadline{io_service};
+  TrackerConnection::DeadLineTimer deadline1{io_service};
+  PeerTransfer peer_transfer{io_service, s_file_s_info};
+
   if (!endpoints.empty()) {
-    TrackerConnection::DeadLineTimer deadline{io_service};
     deadline.expires_from_now(boost::asio::chrono::seconds(120));
-    TrackerConnection tracker_connection{io_service, s_file_s_info};
     deadline.async_wait(
         [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
           WARN(ec.message());
-          io_service.stop();
           peer_size += tracker_connection.peers().size();
+          deadline1.expires_from_now(boost::asio::chrono::seconds(240));
+          deadline1.async_wait(
+              [&]([[maybe_unused]] const TrackerConnection::ErrorCode &ec) {
+                WARN(ec.message());
+              });
+          peer_transfer.Run(tracker_connection.peers().begin(),
+                            tracker_connection.peers().end());
         });
     tracker_connection.Run(endpoints);
-
-    io_service.run();
-    REQUIRE(peer_size > 0);
   }
+
+  io_service.run();
+  REQUIRE(peer_size > 0);
+  REQUIRE(peer_transfer.active_peers().size() > 0);
 }

@@ -31,12 +31,12 @@ class TrackerConnection {
   using Peer = ResponseAnnouncePacket::Peer;
   using Peers = std::vector<Peer>;
 
-  TrackerConnection(IOContext &io_context, TorrentBaseFileInfo file_info)
+  TrackerConnection(IOContext &io_context, const TorrentBaseFileInfo &file_info)
       : receive_ann_buf_(65535),
         socket_{io_context},
         timer_{io_context},
         connection_id_timer_{io_context},
-        file_info_{std::move(file_info)} {
+        file_info_{file_info} {
     connection_id_timer_.expires_at(DeadLineTimer::time_point::max());
     timer_.expires_at(DeadLineTimer::time_point::max());
   }
@@ -47,7 +47,7 @@ class TrackerConnection {
 
   [[nodiscard]] bool stopped() const { return stopped_; }
 
-  [[nodiscard]] Peers peers() const { return peers_; }
+  [[nodiscard]] const Peers &peers() const { return peers_; }
 
  private:
   void Connect();

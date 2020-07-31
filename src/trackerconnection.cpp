@@ -3,6 +3,7 @@
 //
 #include <logger.h>
 #include <udp/trackerconnection.h>
+#include <string>
 #define CURR_ADDRESS (iterator_->host_name() + ":" + iterator_->service_name())
 
 void cocktorrent::udp::TrackerConnection::ConnHandle(
@@ -34,7 +35,7 @@ void cocktorrent::udp::TrackerConnection::ConnIDExpireHandle([
   if (socket_.is_open()) socket_.cancel(ec);
   if (ec || error_code) {
     LOG_ERR("TrackerConnection: Error in resending ConnectionPacket to " +
-            CURR_ADDRESS + ". " + ec.message());
+            CURR_ADDRESS + ". " + (ec ? ec : error_code).message());
   } else {
     LOG_INFO("TrackerConnection: Connection ID expired. " + CURR_ADDRESS);
     socket_.cancel();
@@ -78,6 +79,7 @@ void cocktorrent::udp::TrackerConnection::ConnRequestTimeOut(
     if (time_out_ >= biggest_timeout_) {
       TryNext();
     } else {
+      socket_.cancel();
       SendConnection();
     }
   }
@@ -149,7 +151,7 @@ void cocktorrent::udp::TrackerConnection::ReceiveConnHandle(
   if (error || bytes_transferred < 16) {
     LOG_ERR("TrackerConnection: Error in receiving ConnectionPacket from " +
             CURR_ADDRESS + ". " + std::to_string(bytes_transferred) +
-            " bytes transferred.");
+            " bytes transferred. " + error.message());
   } else {
     LOG_INFO("TrackerConnection: Connection request received from " +
              CURR_ADDRESS + ".");
@@ -171,14 +173,15 @@ void cocktorrent::udp::TrackerConnection::ReceiveAnnHandle(
             " bytes transferred.");
     SendAnnounce(transaction_id);
   } else {
-    LOG_INFO("TrackerConnection: Announce response received from " +
-             CURR_ADDRESS + ".");
     connection_id_timer_.expires_after(TimeOut{60});
     ResponseAnnouncePacket income{boost::asio::buffer(receive_ann_buf_),
                                   transaction_id};
     if (!income.peers().empty()) {
       auto&& p = income.peers();
       std::copy(std::begin(p), std::end(p), std::back_inserter(peers_));
+      LOG_INFO("TrackerConnection: Announce response received from " +
+               CURR_ADDRESS + ". " + std::to_string(p.size()) +
+               " peers received.");
     }
     Stop();
   }
