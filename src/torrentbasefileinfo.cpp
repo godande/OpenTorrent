@@ -23,19 +23,23 @@ TorrentBaseFileInfo::TorrentBaseFileInfo(
 
   auto adapted = adapt(&el).dictionary();
   auto it = adapted.find("announce-list");
-  if (it != adapted.end()) {
-    auto list = std::get_if<bencode::BencodeList>(&it->second.data);
-    if (list != nullptr) {
-      std::for_each(list->begin(), list->end(), [&](auto &&el) {
-        if (auto sublist = std::get_if<bencode::BencodeList>(&el.data)) {
-          std::for_each(sublist->begin(), sublist->end(), [&](auto &&el) {
-            if (auto &&el_str = std::get_if<bencode::BencodeString>(&el.data))
-              announce_list_.push_back(
-                  std::forward<decltype(*el_str)>(*el_str));
-          });
-        }
-      });
-    }
+  if (it == adapted.end()) {
+    return;
   }
+  auto list = std::get_if<bencode::BencodeList>(&it->second.data);
+  if (list == nullptr) {
+    return;
+  }
+  std::for_each(list->begin(), list->end(), [&](auto &&el) {
+    auto sublist = std::get_if<bencode::BencodeList>(&el.data)
+    if (sublist == nullptr) {
+        return;
+    }
+    std::for_each(sublist->begin(), sublist->end(), [&](auto &&el) {
+      if (auto &&el_str = std::get_if<bencode::BencodeString>(&el.data))
+        announce_list_.push_back(
+          std::forward<decltype(*el_str)>(*el_str));
+    });
+  });
 }
 }  // namespace cocktorrent
