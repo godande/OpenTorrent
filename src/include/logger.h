@@ -6,7 +6,7 @@
 
 #define LOG_FILE_PATH "log.txt"
 
-namespace cocktorrent {
+namespace opentorrent {
 class Logger {
  private:
   std::ofstream file{LOG_FILE_PATH};
@@ -33,6 +33,6 @@ class Logger {
 
   Logger &operator=(const Logger &) { return *this; };
 };
-}  // namespace cocktorrent
+}  // namespace opentorrent
 
 #endif  // LOGGER_H

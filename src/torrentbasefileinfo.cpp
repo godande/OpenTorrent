@@ -8,7 +8,7 @@
 #include "bencode.h"
 #include "utilities.h"
 
-namespace cocktorrent {
+namespace opentorrent {
 TorrentBaseFileInfo::TorrentBaseFileInfo(
     const TorrentBaseFileInfo::BencodeElement &el)
     : announce_(adapt(&el)["announce"].string()),
@@ -31,15 +31,14 @@ TorrentBaseFileInfo::TorrentBaseFileInfo(
     return;
   }
   std::for_each(list->begin(), list->end(), [&](auto &&el) {
-    auto sublist = std::get_if<bencode::BencodeList>(&el.data)
+    auto sublist = std::get_if<bencode::BencodeList>(&el.data);
     if (sublist == nullptr) {
-        return;
+      return;
     }
     std::for_each(sublist->begin(), sublist->end(), [&](auto &&el) {
       if (auto &&el_str = std::get_if<bencode::BencodeString>(&el.data))
-        announce_list_.push_back(
-          std::forward<decltype(*el_str)>(*el_str));
+        announce_list_.push_back(std::forward<decltype(*el_str)>(*el_str));
     });
   });
 }
-}  // namespace cocktorrent
+}  // namespace opentorrent

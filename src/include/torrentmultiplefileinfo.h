@@ -10,12 +10,7 @@
 #include "bencodeelementadapter.h"
 #include "torrentbasefileinfo.h"
 
-namespace cocktorrent {
-/**
- * @class TorrentMultipleFileInfo
- * @brief Класс для хранения инфы в случае нескольких файлов
- * @author https://github.com/s3ponia
- */
+namespace opentorrent {
 class TorrentMultipleFileInfo : public TorrentBaseFileInfo {
  public:
   struct File;
@@ -44,6 +39,6 @@ class TorrentMultipleFileInfo : public TorrentBaseFileInfo {
  private:
   List files_;
 };
-}  // namespace cocktorrent
+}  // namespace opentorrent
 
 #endif  // COCKTORRENT_TORRENTMULTIPLEFILEINFO_H

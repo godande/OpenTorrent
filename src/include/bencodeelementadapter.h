@@ -9,7 +9,7 @@
 #include <variant>
 #include "bencode.h"
 
-namespace cocktorrent::bencode {
+namespace opentorrent::bencode {
 using BencodeCastError = std::bad_variant_access;
 template <class T>
 auto adapt(T *element);
@@ -154,5 +154,5 @@ bool BencodeElementAdapter<ElementType>::Contains(
     const BencodeElementAdapter::StringType &s) const {
   return dictionary().find(s) != dictionary().end();
 }
-}  // namespace cocktorrent::bencode
+}  // namespace opentorrent::bencode
 #endif  // COCKTORRENT_BENCODEELEMENTADAPTER_H

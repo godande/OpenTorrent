@@ -6,7 +6,7 @@
 #include "include/udp/responseconnectpacket.h"
 #include "include/utilities.h"
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 
 int32_t ResponseConnectPacket::action() const { return action_; }
 int32_t ResponseConnectPacket::transactionID() const { return transactionID_; }
@@ -45,4 +45,4 @@ ResponseConnectPacket::ResponseConnectPacket(
                            std::to_string(action_)};
   }
 }
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp

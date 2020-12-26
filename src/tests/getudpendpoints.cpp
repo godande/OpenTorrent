@@ -23,10 +23,10 @@ TEST_CASE("UDP", "[torrent][udp][resolver]") {
   std::for_each(
       std::filesystem::begin(dir), std::filesystem::end(dir), [&](auto&& file) {
         auto bencode_str = ReadAll(file.path());
-        auto decoded = cocktorrent::bencode::Decode(bencode_str);
-        cocktorrent::TorrentBaseFileInfo file_info{decoded};
+        auto decoded = opentorrent::bencode::Decode(bencode_str);
+        opentorrent::TorrentBaseFileInfo file_info{decoded};
         if (file_info.announce().find("udp://") == 0) {
-          auto vec = cocktorrent::util::GetUDPEndPoints(file_info.announce(),
+          auto vec = opentorrent::util::GetUDPEndPoints(file_info.announce(),
                                                         io_service);
           INFO(file_info.announce());
           REQUIRE(!vec.empty());
@@ -34,7 +34,7 @@ TEST_CASE("UDP", "[torrent][udp][resolver]") {
         auto&& ann_list = file_info.announce_list();
         std::for_each(ann_list.begin(), ann_list.end(), [&](auto&& el) {
           if (std::forward<decltype(el)>(el).find("udp://") == 0) {
-            auto vec = cocktorrent::util::GetUDPEndPoints(
+            auto vec = opentorrent::util::GetUDPEndPoints(
                 std::forward<decltype(el)>(el), io_service);
             INFO(std::forward<decltype(el)>(el));
             REQUIRE(!vec.empty());

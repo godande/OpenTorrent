@@ -21,9 +21,9 @@ TEST_CASE("Bencode", "[torrent][bencode]") {
   std::for_each(std::filesystem::begin(dir), std::filesystem::end(dir),
                 [](auto&& file) {
                   auto bencode_str = ReadAll(file.path());
-                  auto decoded = cocktorrent::bencode::Decode(bencode_str);
-                  auto encoded = cocktorrent::bencode::Encode(decoded);
-                  auto decoded_twice = cocktorrent::bencode::Decode(encoded);
+                  auto decoded = opentorrent::bencode::Decode(bencode_str);
+                  auto encoded = opentorrent::bencode::Encode(decoded);
+                  auto decoded_twice = opentorrent::bencode::Decode(encoded);
                   REQUIRE(decoded == decoded_twice);
                   REQUIRE(bencode_str == encoded);
                 });

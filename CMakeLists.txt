@@ -22,21 +22,21 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
 
 set_target_properties(${PROJECT_NAME}
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 
 # Unit testing
 file(GLOB TEST_SOURCES "src/tests/*.cpp")
 add_executable(tests ${TEST_SOURCES} ${SOURCES} src/trackerconnection.cpp)
 target_compile_definitions(tests PUBLIC
-  TEST_TORRENT_FILES_PATH=${PROJECT_SOURCE_DIR}/test-torrent-files)
+        TEST_TORRENT_FILES_PATH=${PROJECT_SOURCE_DIR}/test-torrent-files)
 target_link_libraries(tests ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(tests Threads::Threads)
 set_target_properties(tests
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/bin")
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/bin")

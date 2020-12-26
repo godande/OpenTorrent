@@ -7,7 +7,7 @@
 
 #include <boost/asio.hpp>
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 class ConnectPacket {
  public:
   using BufferType = std::array<char, 16>;
@@ -24,5 +24,5 @@ class ConnectPacket {
   int32_t transactionID_;
   BufferType buffer_;
 };
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp
 #endif  // COCKTORRENT_CONNECTPACKET_H

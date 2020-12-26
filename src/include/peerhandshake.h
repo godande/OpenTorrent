@@ -7,7 +7,7 @@
 #include <boost/asio.hpp>
 #include <string_view>
 
-namespace cocktorrent::peer::tcp {
+namespace opentorrent::peer::tcp {
 class PeerHandshake {
  public:
   static constexpr std::string_view protocol_id = "BitTorrent protocol";
@@ -28,6 +28,6 @@ class PeerHandshake {
   std::array<char, 20> peer_id_ = {{"-CK0001-"}};
   boost::asio::streambuf buffer_;
 };
-}  // namespace cocktorrent::peer::tcp
+}  // namespace opentorrent::peer::tcp
 
 #endif  // COCKTORRENT_PEERHANDSHAKE_H

@@ -7,10 +7,11 @@
 #include <boost/asio.hpp>
 #include <cinttypes>
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 class ResponseConnectPacket {
  public:
-  ResponseConnectPacket(const boost::asio::const_buffer &buf, int32_t transactionID);
+  ResponseConnectPacket(const boost::asio::const_buffer &buf,
+                        int32_t transactionID);
   [[nodiscard]] int32_t action() const;
   [[nodiscard]] int32_t transactionID() const;
   [[nodiscard]] int64_t connectionID() const;
@@ -20,6 +21,6 @@ class ResponseConnectPacket {
   int32_t transactionID_{};
   int64_t connectionID_{};
 };
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp
 
 #endif  // COCKTORRENT_RESPONSECONNECTPACKET_H

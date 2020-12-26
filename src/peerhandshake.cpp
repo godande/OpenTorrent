@@ -5,7 +5,7 @@
 #include "include/peerhandshake.h"
 #include "include/utilities.h"
 
-namespace cocktorrent::peer::tcp {
+namespace opentorrent::peer::tcp {
 PeerHandshake::PeerHandshake(const std::array<char, 20> &info_hash)
     : info_hash_(info_hash) {
   std::uniform_int_distribution<char> rand('0', '9');
@@ -14,4 +14,4 @@ PeerHandshake::PeerHandshake(const std::array<char, 20> &info_hash)
 
 //  util::Put(buffer_, pstrlen, protocol_id, reserved, info_hash_, peer_id_);
 }
-}  // namespace cocktorrent::peer::tcp
+}  // namespace opentorrent::peer::tcp

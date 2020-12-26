@@ -14,8 +14,8 @@
 #define STRINGIFY(X) STRINGIFY2(X)
 
 TEST_CASE("Get peers", "[torrent][tracker]") {
-  using namespace cocktorrent;
-  using namespace cocktorrent::udp;
+  using namespace opentorrent;
+  using namespace opentorrent::udp;
   std::ifstream input_file(STRINGIFY(TEST_TORRENT_FILES_PATH) "/nsfw2.torrent",
                            std::ios::binary | std::ifstream::in);
   std::string expression{std::istreambuf_iterator<char>{input_file},

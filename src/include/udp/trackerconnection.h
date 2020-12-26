@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 class TrackerConnection {
  public:
   using EndPoint = boost::asio::ip::udp::endpoint;
@@ -95,7 +95,7 @@ class TrackerConnection {
   DeadLineTimer timer_;
   DeadLineTimer connection_id_timer_;
   InfoHashType info_hash_;
-};  // namespace cocktorrent::udp
-}  // namespace cocktorrent::udp
+};  // namespace opentorrent::udp
+}  // namespace opentorrent::udp
 
 #endif  // COCKTORRENT_TRACKERCONNECTION_H

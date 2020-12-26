@@ -8,7 +8,7 @@
 #include <vector>
 #include "logger.h"
 
-namespace cocktorrent::bencode {
+namespace opentorrent::bencode {
 
 struct BencodeElement;
 using BencodeInt = long long;
@@ -20,12 +20,13 @@ struct BencodeElement {
   std::variant<BencodeInt, BencodeString, BencodeDictionary, BencodeList> data;
 };
 
-constexpr bool operator==(const BencodeElement &lhs, const BencodeElement &rhs) {
+constexpr bool operator==(const BencodeElement &lhs,
+                          const BencodeElement &rhs) {
   return lhs.data == rhs.data;
 }
 
 BencodeElement Decode(std::string_view);
-std::string Encode(const BencodeElement&);
-}  // namespace cocktorrent::bencode
+std::string Encode(const BencodeElement &);
+}  // namespace opentorrent::bencode
 
 #endif  // BENCODE_H

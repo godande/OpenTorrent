@@ -6,7 +6,7 @@
 #include "include/udp/responseannouncepacket.h"
 #include "include/utilities.h"
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 ResponseAnnouncePacket::ResponseAnnouncePacket(
     const boost::asio::const_buffer& buffer, int32_t transactionID) {
   if (buffer.size() < 20) {
@@ -23,7 +23,8 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(
   buff_view.remove_prefix(4);
 
   if (transactionID_ != transactionID) {
-    Logger::get_instance()->Error("ResponseAnnouncePacket: Transaction ID mismatch");
+    Logger::get_instance()->Error(
+        "ResponseAnnouncePacket: Transaction ID mismatch");
     throw std::runtime_error{"ResponseAnnouncePacket: Transaction ID mismatch"};
   }
 
@@ -61,4 +62,4 @@ const std::vector<ResponseAnnouncePacket::Seed>& ResponseAnnouncePacket::peers()
     const {
   return peers_;
 }
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp

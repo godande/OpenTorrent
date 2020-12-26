@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace cocktorrent::util {
+namespace opentorrent::util {
 inline ::std::mt19937 generator{::std::random_device{}()};
 template <class T>
 using EnableIfIntegral =
@@ -60,7 +60,7 @@ template <class T, class Cont>
 ::std::vector<T> ToVector(Cont &&c) {
   auto b = ::std::begin(::std::forward<Cont>(c));
   auto e = ::std::begin(::std::forward<Cont>(c));
-  return ::cocktorrent::util::ToVector<T>(b, e);
+  return ::opentorrent::util::ToVector<T>(b, e);
 }
 
 template <size_t Size>
@@ -79,17 +79,17 @@ T NetworkToHost(T x) noexcept {
 }
 
 template <class T, typename = EnableIfIntegral<T>>
-::cocktorrent::util::CharSequence<sizeof(T)> ToNetworkCharSequence(T x) {
-  ::cocktorrent::util::CharSequence<sizeof(T)> chars;
-  x = ::cocktorrent::util::HostToNetwork(x);
+::opentorrent::util::CharSequence<sizeof(T)> ToNetworkCharSequence(T x) {
+  ::opentorrent::util::CharSequence<sizeof(T)> chars;
+  x = ::opentorrent::util::HostToNetwork(x);
   ::std::memcpy(chars.chars, &x, sizeof(T));
   return chars;
 }
 template <class T, typename = EnableIfIntegral<T>>
-T FromNetworkCharSequence(::cocktorrent::util::CharSequence<sizeof(T)> bytes) {
+T FromNetworkCharSequence(::opentorrent::util::CharSequence<sizeof(T)> bytes) {
   T value;
   ::std::memcpy(&value, bytes.chars, sizeof(T));
-  return ::cocktorrent::util::NetworkToHost(value);
+  return ::opentorrent::util::NetworkToHost(value);
 }
 
 template <class T, typename = EnableIfIntegral<T>>
@@ -103,7 +103,7 @@ T FromNetworkCharSequence(::std::string_view bytes) {
                              "} in "
                              "FromNetworkCharSequence(std::string_view).");
   ::std::memcpy(&value, bytes.data(), sizeof(T));
-  return ::cocktorrent::util::NetworkToHost(value);
+  return ::opentorrent::util::NetworkToHost(value);
 }
 
 template <size_t size>
@@ -123,7 +123,7 @@ inline void Put(::boost::asio::streambuf &buf, ::std::string_view sv) {
 
 template <class T, typename = EnableIfIntegral<T>>
 void Put(::boost::asio::streambuf &buf, T el) {
-  buf.sputn(::cocktorrent::util::ToNetworkCharSequence(el).chars, sizeof(el));
+  buf.sputn(::opentorrent::util::ToNetworkCharSequence(el).chars, sizeof(el));
 }
 
 template <size_t N>
@@ -132,9 +132,9 @@ void Put(::boost::asio::streambuf &buf, ::std::array<char, N> ar) {
 }
 
 template <class... T>
-void Put(::boost::asio::streambuf &buf, T &&... els) {
+void Put(::boost::asio::streambuf &buf, T &&...els) {
   [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
-      (::cocktorrent::util::Put(buf, ::std::forward<T>(els)), 0)...};
+      (::opentorrent::util::Put(buf, ::std::forward<T>(els)), 0)...};
 }
 
 namespace detail {
@@ -145,7 +145,7 @@ inline void Put(char *buf, ::std::string_view sv) {
 
 template <class T, typename = EnableIfIntegral<T>>
 void Put(char *buf, T el) {
-  ::std::memcpy(buf, ::cocktorrent::util::ToNetworkCharSequence(el).chars,
+  ::std::memcpy(buf, ::opentorrent::util::ToNetworkCharSequence(el).chars,
                 sizeof(el));
 }
 
@@ -155,21 +155,21 @@ void Put(char *buf, ::std::array<char, N> ar) {
 }
 
 template <class... T>
-void Put(char *buf, T &&... els) {
+void Put(char *buf, T &&...els) {
   [[maybe_unused]] int dummy_arr[sizeof...(T)] = {
-      (::cocktorrent::util::detail::Put(buf, ::std::forward<T>(els)),
+      (::opentorrent::util::detail::Put(buf, ::std::forward<T>(els)),
        buf += sizeof(T), 0)...};
 }
 }  // namespace detail
 
 template <class... T, size_t N>
 void Put([[maybe_unused]] ::std::array<char, N> &buf,
-         [[maybe_unused]] T &&... els) {
+         [[maybe_unused]] T &&...els) {
   constexpr size_t all_size = (sizeof(T) + ...);
   static_assert(N == all_size, "Array size mismatch.");
-  ::cocktorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
+  ::opentorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
 }
 
-}  // namespace cocktorrent::util
+}  // namespace opentorrent::util
 
 #endif  // UTILITIES_H

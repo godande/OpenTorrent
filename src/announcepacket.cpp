@@ -7,7 +7,7 @@
 #include <random>
 #include "utilities.h"
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 
 AnnouncePacket::AnnouncePacket(int64_t connectionId,
                                std::array<char, 20> infoHash,
@@ -63,5 +63,7 @@ uint16_t AnnouncePacket::port() const { return port_; }
 
 uint16_t AnnouncePacket::extensions() const { return extensions_; }
 
-const AnnouncePacket::BufferType &AnnouncePacket::buffer() const { return buffer_; }
-}  // namespace cocktorrent::udp
+const AnnouncePacket::BufferType &AnnouncePacket::buffer() const {
+  return buffer_;
+}
+}  // namespace opentorrent::udp

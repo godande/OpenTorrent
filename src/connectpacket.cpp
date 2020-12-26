@@ -6,7 +6,7 @@
 #include "include/utilities.h"
 #include "utilities.h"
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 ConnectPacket::ConnectPacket() {
   std::uniform_int_distribution<uint32_t> distribution;
   transactionID_ = distribution(util::generator);
@@ -18,4 +18,4 @@ int32_t ConnectPacket::transactionID() const { return transactionID_; }
 const ConnectPacket::BufferType& ConnectPacket::buffer() const {
   return buffer_;
 }
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp

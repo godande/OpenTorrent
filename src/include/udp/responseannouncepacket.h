@@ -9,7 +9,7 @@
 #include <cinttypes>
 #include <vector>
 
-namespace cocktorrent::udp {
+namespace opentorrent::udp {
 class ResponseAnnouncePacket {
  public:
   ResponseAnnouncePacket() = delete;
@@ -40,5 +40,5 @@ class ResponseAnnouncePacket {
   int32_t seeders_{};
   std::vector<Seed> peers_;
 };
-}  // namespace cocktorrent::udp
+}  // namespace opentorrent::udp
 #endif  // COCKTORRENT_RESPONSEANNOUNCEPACKET_H

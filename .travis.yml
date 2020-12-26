@@ -1,7 +1,7 @@
 language: cpp
 addons:
   apt:
-    sources: 
+    sources:
       - boost-latest
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-8
