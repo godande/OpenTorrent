@@ -5,7 +5,13 @@
 #include "include/logger.h"
 #include "include/udp/responseannouncepacket.h"
 #include "include/utilities.h"
-
+enum Offset {
+  action = 0,
+  transaction = 1,
+  interval = 2,
+  leechers = 3,
+  seeders = 4
+};
 namespace opentorrent::udp {
 ResponseAnnouncePacket::ResponseAnnouncePacket(
     const boost::asio::const_buffer& buffer, int32_t transactionID) {
@@ -15,28 +21,27 @@ ResponseAnnouncePacket::ResponseAnnouncePacket(
   }
   std::string_view buff_view{static_cast<const char*>(buffer.data()),
                              buffer.size()};
-  action_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
-  buff_view.remove_prefix(4);
-
-  transactionID_ =
-      util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
-  buff_view.remove_prefix(4);
-
+  //  action_ = util::FromNetworkCharSequence<int32_t>(
+  //      buff_view.substr(4 * Offset::action, 4));
+  //  transactionID_ = util::FromNetworkCharSequence<int32_t>(
+  //      buff_view.substr(4 * Offset::transaction, 4));
+  //  interval_ = util::FromNetworkCharSequence<int32_t>(
+  //      buff_view.substr(4 * Offset::interval, 4));
+  //  leechers_ = util::FromNetworkCharSequence<int32_t>(
+  //      buff_view.substr(4 * Offset::leechers, 4));
+  //  seeders_ = util::FromNetworkCharSequence<int32_t>(
+  //      buff_view.substr(4 * Offset::seeders, 4));
+  std::tie(action_, transactionID_, interval_, leechers_, seeders_) =
+      util::Get<decltype(action_), decltype(transactionID_),
+                decltype(interval_), decltype(leechers_), decltype(seeders_)>(
+          buff_view);
   if (transactionID_ != transactionID) {
     Logger::get_instance()->Error(
         "ResponseAnnouncePacket: Transaction ID mismatch");
     throw std::runtime_error{"ResponseAnnouncePacket: Transaction ID mismatch"};
   }
 
-  interval_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
-  buff_view.remove_prefix(4);
-
-  leechers_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
-  buff_view.remove_prefix(4);
-
-  seeders_ = util::FromNetworkCharSequence<int32_t>(buff_view.substr(0, 4));
-  buff_view.remove_prefix(4);
-
+  buff_view.remove_prefix(4 * (Offset::seeders + 1));
   while (buff_view.size() >= 6) {
     auto to_return =
         Seed{util::FromNetworkCharSequence<uint32_t>(buff_view.substr(0, 4)),

@@ -10,7 +10,7 @@
 namespace opentorrent::peer::tcp {
 class PeerHandshake {
  public:
-  static constexpr std::string_view protocol_id = "BitTorrent protocol";
+  static constexpr std::string_view protocol_id{"BitTorrent protocol"};
   static constexpr char pstrlen = 19;
   static constexpr int64_t reserved = 0;
 
@@ -22,7 +22,6 @@ class PeerHandshake {
     return info_hash_;
   }
   [[nodiscard]] const std::array<char, 20> &peer_id() { return peer_id_; }
-
  private:
   std::array<char, 20> info_hash_;
   std::array<char, 20> peer_id_ = {{"-CK0001-"}};

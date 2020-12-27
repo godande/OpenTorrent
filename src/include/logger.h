@@ -8,9 +8,6 @@
 
 namespace opentorrent {
 class Logger {
- private:
-  std::ofstream file{LOG_FILE_PATH};
-
  public:
   static Logger *get_instance();
 
@@ -23,7 +20,7 @@ class Logger {
   void Error(const std::string &);
 
  private:
-  ~Logger() = default;
+  std::ofstream file{LOG_FILE_PATH};
 
   Logger() = default;
 
@@ -32,6 +29,8 @@ class Logger {
   void Write(const std::string &, const std::string &);
 
   Logger &operator=(const Logger &) { return *this; };
+
+  ~Logger() = default;
 };
 }  // namespace opentorrent
 

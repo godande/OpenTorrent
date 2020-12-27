@@ -1,8 +1,6 @@
-#include <torrentsinglefileinfo.h>
 #include <udp/trackerconnection.h>
 #include <boost/asio.hpp>
 #include <ios>
-#include <iostream>
 #include <string>
 #include "../third-party/include/catch.hpp"
 #include "bencode.h"

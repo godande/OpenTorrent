@@ -16,6 +16,7 @@
 #include <string_view>
 #include <type_traits>
 #include <vector>
+#include <tuple>
 
 namespace opentorrent::util {
 inline ::std::mt19937 generator{::std::random_device{}()};
@@ -24,8 +25,8 @@ using EnableIfIntegral =
     ::std::enable_if<::std::is_integral_v<::std::decay_t<T>>>;
 
 inline auto CurrentDate() {
-  auto time = ::std::chrono::system_clock::now();
-  auto tm = ::std::chrono::system_clock::to_time_t(time);
+  using time = ::std::chrono::system_clock;
+  auto tm = time::to_time_t(time::now());
   return ::std::put_time(::std::localtime(&tm), "%Y-%m-%d %H:%M:%S");
 }
 
@@ -37,7 +38,7 @@ inline ::boost::asio::ip::udp::resolver::results_type GetUDPEndPoints(
   std::string_view port;
   if (IsUdp(url)) {
     url.remove_prefix(sizeof("udp://") - 1);
-    auto start_port = url.find(":");
+    auto start_port = url.find(':');
     domain = url.substr(0, start_port);
     auto sv = url.begin() + start_port + 1;
     auto it = sv;
@@ -166,8 +167,20 @@ template <class... T, size_t N>
 void Put([[maybe_unused]] ::std::array<char, N> &buf,
          [[maybe_unused]] T &&...els) {
   constexpr size_t all_size = (sizeof(T) + ...);
-  static_assert(N == all_size, "Array size mismatch.");
+  static_assert(N >= all_size, "Array size mismatch.");
   ::opentorrent::util::detail::Put(buf.data(), std::forward<T>(els)...);
+}
+
+template <class T, typename = EnableIfIntegral<T>>
+T GetMagic(std::string_view &buffer_view) {
+  T tmp = util::FromNetworkCharSequence<T>(buffer_view.substr(0, sizeof(T)));
+  buffer_view.remove_prefix(sizeof(T));
+  return tmp;
+}
+
+template <class... T>
+std::tuple<T...> Get(std::string_view &buffer_view) {
+  return std::tuple<T...>(GetMagic<T>(buffer_view)...);
 }
 
 }  // namespace opentorrent::util

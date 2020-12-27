@@ -8,7 +8,6 @@
 #include "utilities.h"
 
 namespace opentorrent::udp {
-
 AnnouncePacket::AnnouncePacket(int64_t connectionId,
                                std::array<char, 20> infoHash,
                                std::array<char, 20> peerId, int64_t downloaded,

@@ -12,7 +12,6 @@
 namespace opentorrent::udp {
 class ResponseAnnouncePacket {
  public:
-  ResponseAnnouncePacket() = delete;
   ResponseAnnouncePacket(const boost::asio::const_buffer& buffer,
                          int32_t transactionID);
   struct Seed {
